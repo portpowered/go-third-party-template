@@ -75,13 +75,15 @@ Assign a reviewer who did not implement the migration to inspect the library
 at a specific commit. The reviewer checks each numbered library standard against
 the exported API, schemas and generated files, client call sites, synthetic and
 captured evidence, CI workflows and results, package layout, rendered Pages
-site, and release/history record. Record the reviewer, commit, evidence, and
-each finding in the library checklist. Keep the independent-review item open
-until every finding and other checklist item is resolved. Tracking an open
-finding is not sign-off. Rerun the affected checks and have the reviewer
-verify the fixes at the final commit before marking the item complete. Keep
-provider behavior that lacks documented account evidence labeled
-implementation-derived.
+site, and release/history record. The reviewer writes a repository document
+with an individual verdict and concrete evidence for each numbered standard,
+including an endpoint inventory and negative gate tests for item 4. Link it
+from the library checklist and record each finding there. Keep the
+independent-review item open until every finding and other checklist item is
+resolved. Tracking an open finding is not sign-off. Rerun the affected checks
+and have the reviewer verify the fixes at the final commit before marking the
+item complete. Keep provider behavior that lacks documented account evidence
+labeled implementation-derived.
 
 ## Continuous integration
 
