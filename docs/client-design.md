@@ -43,7 +43,6 @@ the reusable client.
 
 The httpclient package owns request construction, response decoding, and
 transport error classification. It accepts an injected HTTPDoer while keeping
-wire structs private. The application owns its HTTP transport configuration
-and request deadlines. If a client later adds another protocol, put that
-transport in a focused package and keep transport details out of the root API
-types.
+wire structs private. The caller owns its HTTP transport configuration and
+request deadlines. If a client later adds another protocol, put that transport
+in a focused package and keep transport details out of the root API types.

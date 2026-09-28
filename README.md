@@ -1,10 +1,18 @@
 # Go third-party service client template
 
 This repository is a starting point for a Go client library for one service.
-Replace github.com/example/your-service-go, the service package name,
-SERVICE_* environment variables, and the example API URL before publishing.
-The template includes an Apache-2.0 [license](LICENSE); review it for each
-derived library.
+Before publishing, replace the example module path, repository owner and name,
+service package name, `SERVICE_*` environment variables, example API URL, and
+the corresponding values in `mkdocs.yml`. Review the included Apache-2.0
+[license](LICENSE) for each derived library.
+
+[![Go version](https://img.shields.io/github/go-mod/go-version/example/your-service-go)](go.mod)
+[![CI](https://github.com/example/your-service-go/actions/workflows/ci.yml/badge.svg)](https://github.com/example/your-service-go/actions/workflows/ci.yml)
+[![Coverage](https://github.com/example/your-service-go/wiki/coverage.svg)](https://raw.githack.com/wiki/example/your-service-go/coverage.html)
+[![Latest release](https://img.shields.io/github/v/release/example/your-service-go)](https://github.com/example/your-service-go/releases/latest)
+[![Go Reference](https://pkg.go.dev/badge/github.com/example/your-service-go.svg)](https://pkg.go.dev/github.com/example/your-service-go)
+[![License](https://img.shields.io/github/license/example/your-service-go)](LICENSE)
+[![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://example.github.io/your-service-go/)
 
 ## Quick start
 
@@ -103,8 +111,9 @@ after multiple independent provider implementations establish matching behavior;
 Run make check before proposing a change. It runs static checks, builds packages
 and examples, and runs tests with the race detector. See
 [docs/verification.md](docs/verification.md) for fixture provenance and CI
-details, [docs/migration-guide.md](docs/migration-guide.md) for extracting a
-provider client from an application, the
-[Python-to-Go migration playbook](docs/python-provider-migration-playbook.md)
-for a task-by-task conversion checklist, and
-[docs/releasing.md](docs/releasing.md) for module tags and release verification.
+details, the [Python-to-Go migration playbook](docs/python-provider-migration-playbook.md)
+for a task-by-task conversion checklist, [docs/releasing.md](docs/releasing.md)
+for module tags and release verification, and the
+[website guide](docs/website.md) for generated documentation and GitHub Pages
+setup. The [library standards](docs/library-standards.md) apply when creating a
+new library from this template.

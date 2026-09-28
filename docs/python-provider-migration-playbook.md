@@ -8,9 +8,8 @@ an assumption into a supported contract by copying it into Go.
 The intended boundary is one provider library containing protocol behavior and
 a small application adapter that translates between the library and the
 application. Keep application storage, scheduling, orchestration, and provider
-selection outside the library. See the [extraction overview](migration-guide.md)
-for that boundary and [client design](client-design.md) for the conventions used
-by this template.
+selection outside the library. See [client design](client-design.md) for the
+conventions used by this template.
 
 ## 1. Inventory the Python implementation
 
@@ -208,21 +207,22 @@ independent of live credentials and network access.
 - [ ] Verify tests do not depend on map iteration order, wall-clock timing, or
   external services.
 
-## 10. Replace the Python integration with an application adapter
+## 10. Connect the Go library through an application adapter
 
-Wire the Go library into the application through a narrow adapter. Keep
-application workflow and persistence on the application side.
+Connect the Go library to the application through a narrow adapter. Keep
+application workflows and persistence in the application.
 
 - [ ] Construct the client once from application configuration and injected
   transport dependencies.
-- [ ] Translate backend requests and credentials into library request types.
-- [ ] Translate library results and typed errors into the backend's existing
-  contract.
+- [ ] Translate application requests and credential values into library
+  request types.
+- [ ] Translate library results and typed errors into the application's
+  existing contract.
 - [ ] Keep storage, scheduling, provider choice, and cross-provider workflows
   outside the Go library.
 - [ ] Compare old and new behavior for every operation in the inventory matrix.
 - [ ] Remove the duplicated Python provider implementation only after the Go
-  adapter covers the supported behavior and callers have migrated.
+  adapter covers the supported behavior and application callers have migrated.
 
 ## 11. Write user-facing documentation
 
@@ -233,7 +233,7 @@ application workflow and persistence on the application side.
 - [ ] Provide a compiling example that uses a context and demonstrates typed
   error handling without real credentials.
 - [ ] Label unsupported, unverified, synthetic, or historical behavior clearly.
-- [ ] Explain setup and migration for application users without exposing
+- [ ] Explain setup and migration for application callers without exposing
   internal implementation details as part of the API.
 - [ ] Review the README and examples from the perspective of a new Go consumer.
 
@@ -268,8 +268,8 @@ The migration is ready for review when all of the following are true:
   behavior are documented and match the implementation.
 - [ ] Replay and unit tests cover the supported contract without live network
   access or credentials.
-- [ ] The application adapter covers the inventory matrix and no longer needs
-  the duplicated Python provider implementation.
+- [ ] The application adapter covers the inventory matrix and the application
+  no longer needs the duplicated Python provider implementation.
 - [ ] Documentation examples compile from a separate consumer module.
 - [ ] `make check` and the release readiness steps pass, and the reviewed public
   API contains only intentional exports.

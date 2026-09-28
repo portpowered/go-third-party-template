@@ -2,6 +2,7 @@
 .env.*
 !.env.example
 coverage.out
+site/
 *.test
 *.prof
 dist/

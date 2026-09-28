@@ -11,6 +11,8 @@
 4. Review the included Apache-2.0 license and confirm it is appropriate for the
    new library before publishing.
 5. Run the checks in verification.md and review the public README examples.
+6. Replace the owner, repository, module, and site URL placeholders in the
+   README badges and `mkdocs.yml`.
 
 ## Tag and verify
 
@@ -40,3 +42,8 @@ go list -m github.com/example/your-service-go
 ```
 
 Replace the example module path and version with the values for the release.
+
+The documentation workflow builds the Markdown pages and publishes them to
+GitHub Pages when documentation changes reach `main`. Enable GitHub Pages with
+GitHub Actions as the publishing source in repository settings before the
+first deployment. See [website publishing](website.md) for the full setup.

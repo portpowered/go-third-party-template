@@ -46,6 +46,30 @@ jobs:
         run: |
           go mod tidy
           git diff --exit-code -- go.mod go.sum
+  coverage:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GOWORK: 'off'
+      GOTOOLCHAIN: local
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+      - name: Test with coverage
+        run: go test -race -coverprofile coverage.out ./...
+      - name: Publish coverage badge and report
+        uses: ncruces/go-coverage-report@dfc237255099f2d25066babde51253992175e365 # v0
+        with:
+          coverage-file: coverage.out
+          badge-title: coverage
+          report: true
+          chart: false
+          amend: true
   api-compatibility:
     runs-on: ubuntu-latest
     env:
