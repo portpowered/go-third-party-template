@@ -2,8 +2,9 @@
 
 ## Provider client conventions
 
-The root service package is the public API for one provider. Keep its request
-and result types independent of wire-format structs. Group the supported
+The extracted library's `pkg/<provider>` package is the public API for one provider.
+The synthetic scaffold starts at the module root and must move before release.
+Keep its request and result types independent of wire-format structs. Group the supported
 operations in the Client interface so callers can see the library surface in
 one place.
 
@@ -11,6 +12,13 @@ Use context.Context on every operation that can wait on I/O. Keep
 account-specific credentials on each account request so one client can serve
 multiple accounts without changing shared authorization state. Return typed
 errors that preserve causes and expose a stable failure kind.
+
+Construct the reusable client from named options or a configuration value.
+Validate endpoints and conflicting options at construction time. Configuration
+may hold immutable service settings and injected transports; account tokens
+belong in requests or explicit sessions. Do not update shared client fields
+when a login or refresh call returns new credentials. Return those credentials
+to the caller for storage and later requests.
 
 The example Client interface is a provider-specific contract. These design
 conventions can be reused by separate provider libraries, but this template has
@@ -32,17 +40,21 @@ contains no cross-vendor capability interface.
 
 ## Optional long-running sessions
 
-Skip session types when operations are short request/response calls. When a
-service operation opens a long-running connection, return an explicit session
-object from the client. Pass a context when opening it, document who owns
+Skip session types when operations are short request/response calls. Use an
+explicit session for multi-step login, long-running connections, streams, and
+other stateful lifecycles. Pass a context when opening it, document who owns
 Close, make repeated close calls safe, and surface terminal errors and
-backpressure to the caller. Keep connection state in the session rather than
-the reusable client.
+backpressure to the caller. Keep account and connection state in the session
+rather than the reusable client. Provide a way for callers to read tokens
+produced by a session without reading internal client fields.
 
 ## Transport ownership
 
-The httpclient package owns request construction, response decoding, and
+The transport package owns request construction, response decoding, and
 transport error classification. It accepts an injected HTTPDoer while keeping
 wire structs private. The caller owns its HTTP transport configuration and
-request deadlines. If a client later adds another protocol, put that transport
-in a focused package and keep transport details out of the root API types.
+request deadlines. Add focused injection points for each other protocol the
+client uses, including HTTP/2, WebSocket, MQTT, or RTC signaling. Keep
+transport details out of public request and result types. Place wire types in
+an appropriate `internal` package and verify the public import path from a
+separate consumer module.

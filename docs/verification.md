@@ -7,6 +7,7 @@ Format changed Go files, then run the checks before a release:
 ```sh
 gofmt -w .
 make check
+go test -coverprofile=coverage.out ./...
 ```
 
 make check builds every package and example, runs go vet, and runs tests with
@@ -18,6 +19,16 @@ non-blocking so reviewers can decide whether an intentional break is appropriate
 The package list defaults to the module root and httpclient; pass -module and
 -packages to tools/compatibility when the module path or public packages change.
 Run make api-compatibility to compare against the most recent stable release tag.
+
+For extracted libraries, report coverage for each public and transport package
+and for non-generated production code in combination. Exclude generated files
+explicitly rather than counting them as uncovered or using generated code to
+inflate the percentage. Reach at least 80% combined coverage and target 90%.
+Use deterministic synthetic inputs to cover success, provider errors, invalid
+responses, cancellation, token rotation, and session lifecycle where applicable.
+Review uncovered behavior before adding tests; a percentage alone is not a
+behavioral sign-off. Keep live integration results separate from synthetic
+unit and replay coverage.
 
 ## Fixture provenance
 

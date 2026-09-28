@@ -5,7 +5,9 @@
 1. Replace github.com/example/your-service-go in go.mod, examples, tests, and
    the release workflow with the public module path.
 2. Replace the service package name and SERVICE_* configuration names with
-   names appropriate for the library.
+   names appropriate for the library. Move the synthetic root package into
+   `pkg/<provider>` and update imports, examples, tests, and compatibility
+   package settings before publishing.
 3. Replace the example endpoint, resource, and wire response with verified
    provider behavior. Remove any operation the library does not support.
 4. Review the included Apache-2.0 license and confirm it is appropriate for the
@@ -14,6 +16,11 @@
 6. Replace the owner, repository, module, and site URL placeholders in the
    README badges, and update the API title and schema paths in
    `.github/workflows/docs.yml`.
+7. Work through all eleven items in `docs/library-standards.md` as a checked
+   and evidenced library-specific migration checklist. In particular, verify
+   the `pkg/<provider>` import path, coverage threshold and exclusions,
+   option-based initialization, client/session state boundary, every network
+   injection seam, and caller-visible token refresh before tagging.
 
 ## Tag and verify
 
@@ -24,7 +31,7 @@ the tag to start .github/workflows/release.yml.
 The release workflow compares the public API with the prior stable tag, applies
 the version policy, runs tests and static checks, downloads the tagged module
 through the public Go module proxy in a separate temporary module, compiles a
-small consumer against the root and HTTP packages, then publishes GitHub release
+small consumer against the configured public packages, then publishes GitHub release
 notes. Set the workflow PUBLIC_MODULE to the same path as go.mod and
 PUBLIC_PACKAGES to the exported packages before creating the first tag.
 
