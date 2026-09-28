@@ -47,6 +47,18 @@ write a profile for an HTML report that uses the same exclusions.
 
 ## Fixture provenance
 
+Each replay case must carry both sides of the exchange. For HTTP, keep the
+expected outbound method, origin, escaped path, complete query multimap,
+relevant headers, and request body with the response status, headers, and body.
+For streams and sockets, keep ordered client and server frames with payloads.
+The replay transport must validate a request before returning its paired
+response, fail on unexpected or repeated calls, and assert that all expected
+exchanges were consumed. Do not use a sequential or operation-name fallback
+that returns a response after a request mismatch. Explicitly describe how
+volatile or redacted values are matched; compare their structure or decoded
+meaning rather than skipping them. Check this for every transport during the
+independent review (library standard 15).
+
 Keep real captures, synthetic examples, and historical references separate:
 
 - Put observed and sanitized payloads under

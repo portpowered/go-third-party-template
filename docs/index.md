@@ -14,6 +14,7 @@ provider client, verify protocol behavior, and prepare a Go module release.
 - [Python-to-Go migration playbook](python-provider-migration-playbook.md)
   provides a task-by-task conversion checklist.
 - [Verification](verification.md) defines fixture provenance and CI checks.
+- [Paired replay audit](replay-audit-2026-09-28.md) records the current status of the four standalone libraries against standard 15.
 - [Releasing](releasing.md) covers module versioning and release verification.
 - [Website publishing](website.md) explains how this site is built and deployed.
 

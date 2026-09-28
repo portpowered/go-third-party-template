@@ -212,6 +212,12 @@ independent of live credentials and network access.
   important failure responses.
 - [ ] Assert request method, escaped URL, headers, authentication placement,
   query/body encoding, and response decoding.
+- [ ] Keep each expected outbound request and its response in one replay pair;
+  for sockets and streams, keep ordered bidirectional frames. Match the
+  request before returning its response, reject unexpected or duplicate calls,
+  assert all pairs were consumed, and never fall back after a mismatch.
+- [ ] Give volatile and redacted fields explicit format or decoded-value
+  matchers. Audit every transport and fixture for response-only replay cases.
 - [ ] Cover pagination, optional or missing fields, malformed responses,
   oversized responses, rate limits, and request IDs where relevant.
 - [ ] Test context cancellation, transport failures, and concurrent use when
