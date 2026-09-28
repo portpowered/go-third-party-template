@@ -7,7 +7,6 @@ Format changed Go files, then run the checks before a release:
 ```sh
 gofmt -w .
 make check
-go test -coverprofile=coverage.out ./...
 ```
 
 make check builds every package and example, runs go vet, and runs tests with
@@ -30,6 +29,18 @@ cancellation, token rotation, and session lifecycle where applicable.
 Review uncovered behavior before adding tests; a percentage alone is not a
 behavioral sign-off. Keep live integration results separate from synthetic
 unit and replay coverage.
+
+After moving the synthetic scaffold into `pkg/<provider>`, run the reusable
+coverage gate from the module root:
+
+```sh
+go test -coverpkg=./pkg/... -coverprofile=coverage.out ./pkg/...
+go run ./tools/coverage -profile coverage.out -min 80
+```
+
+The gate reports each package and a statement-weighted combined percentage.
+It excludes generated files marked `Code generated ... DO NOT EDIT` and files
+named `*.gen.go`; review the exclusions alongside the result.
 
 ## Fixture provenance
 
