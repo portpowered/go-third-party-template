@@ -71,6 +71,16 @@ or claim any provider behavior has been verified.
 
 ## Continuous integration
 
+Before signing off schema generation, list every outbound HTTP method and path,
+GraphQL operation, event channel, stream frame, signaling route, and other wire
+exchange the client can initiate or consume. Match each inventory row to a
+checked-in schema entry, its generated endpoint definition and wire types, and
+the client call site that uses them. Mark any implementation-derived entry as
+such. An endpoint with only a schema entry or only a generated reference page
+is incomplete. Add a CI check that detects new call sites without schema
+entries and fails when regeneration changes checked-in output. Repeat this
+inventory for each library; partial provider catalogues are not a sign-off.
+
 The CI workflow builds, tests with the race detector, runs go vet, checks
 gofmt, and confirms go mod tidy leaves module files unchanged. Keep checks
 offline and deterministic. Live endpoint tests should be separate, opt-in, and
