@@ -1,42 +1,50 @@
-# Documentation website
+# API documentation website
 
-The Markdown files in `docs/` are built with MkDocs. Pull requests build the
-site in strict mode, so broken navigation and links fail CI. Every push to
-`main` runs the race-enabled test suite, builds the site, adds a Go coverage
-report and badge data, and publishes the result to GitHub Pages.
+The `Documentation` workflow uses the shared
+[Fumadocs API documentation action](https://github.com/portpowered/api-docs-website-github-action)
+to generate the Pages site from checked-in API schemas. The template includes
+`api/openapi.yaml` as a clearly synthetic widget example; it is not a contract
+for any real service. Replace it with reviewed schemas for a derived library.
+The generator builds the schema reference, while the guides in `docs/` remain
+repository documentation.
 
 ## Customize the site
 
-Before publishing a derived library, update `site_name`, `site_url`, `repo_url`,
-`repo_name`, and `edit_uri` in `mkdocs.yml`. Replace the example repository and
-module values in the README badges too. Keep the site name and navigation
-specific to the library's supported API and documentation.
+Update the workflow's `title` and schema paths when adapting the template. The
+action derives the GitHub Pages project base path from the repository name, so
+the workflow does not need a repository-specific path. Replace the example
+repository and module values in the README badges before publishing.
 
 ## Enable GitHub Pages
 
 In the repository settings, open **Pages** and set the publishing source to
 **GitHub Actions**. The `Documentation` workflow deploys the generated site on
-every push to `main`, or when manually started from the `main` branch in the
-Actions tab. The workflow exposes the published URL as its deployment
-environment URL.
+pushes to `main`, or when manually started from `main`. Pull requests build the
+Fumadocs site without deploying it. The workflow exposes the published URL as
+its deployment environment URL.
 
 ## Coverage report and badge
 
 On each `main` push, the workflow runs race-enabled Go tests with coverage,
 writes the HTML report to `site/coverage.html`, and creates `site/coverage.json`
-for the Shields endpoint badge. Both files are included in the Pages
-deployment, so the workflow needs no repository content write permission.
-Coverage generation is skipped for pull requests; pull requests still build
-the documentation in strict mode. The README badge links to the generated
-report.
+for the Shields endpoint badge. Both files are added after the API site is
+built and included in the Pages deployment. Coverage generation is skipped for
+pull requests. The README badge links to the generated report.
 
-Run the same documentation build locally with:
+## Build locally
+
+The shared action repository contains the same generator used in CI. Check out
+the `v0.2.0` tag and run `npm ci` in that repository. From its root, run the
+build with the source repository and output directory set explicitly:
 
 ```sh
-python -m pip install -r requirements-docs.txt
-mkdocs build --strict
+API_DOCS_SOURCE=/absolute/path/to/your-service-go \
+API_DOCS_OPENAPI=api/openapi.yaml \
+API_DOCS_DISCOVER=false \
+API_DOCS_OUTPUT=/absolute/path/to/your-service-go/site \
+npm run build
 ```
 
-The `Documentation` workflow contains the coverage report and badge generation
-steps. Replace the example Pages URL in the README badge after customizing the
-site settings.
+Replace the paths for your local checkouts. The action's `base-path` input is
+optional; on GitHub Actions it defaults to the repository name for project
+Pages sites.

@@ -1,7 +1,8 @@
-# Go Service Client
+# Go Service Client Template
 
-This site documents a Go client library for one service. Replace the example
-module, repository, and service details before publishing a derived library.
+These repository guides support a Go client library for one service. Replace
+the example module, repository, and service details before publishing a derived
+library. The Pages site is generated separately from API schemas with Fumadocs.
 
 Use the guides to shape the public client API, migrate an existing Python
 provider client, verify protocol behavior, and prepare a Go module release.
@@ -16,6 +17,6 @@ provider client, verify protocol behavior, and prepare a Go module release.
 - [Releasing](releasing.md) covers module versioning and release verification.
 - [Website publishing](website.md) explains how this site is built and deployed.
 
-The generated coverage report and badge data are published with this site after
-pushes to `main`. Find the report through the coverage badge in the repository
-README.
+The generated API reference, coverage report, and badge data are published to
+GitHub Pages after pushes to `main`. Find the report through the coverage badge
+in the repository README.

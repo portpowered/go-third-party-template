@@ -3,8 +3,9 @@
 This repository is a starting point for a Go client library for one service.
 Before publishing, replace the example module path, repository owner and name,
 service package name, `SERVICE_*` environment variables, example API URL, and
-the corresponding values in `mkdocs.yml`. Review the included Apache-2.0
-[license](LICENSE) for each derived library.
+the example schema in `api/openapi.yaml` and title in
+`.github/workflows/docs.yml`. Review the included Apache-2.0 [license](LICENSE)
+for each derived library.
 
 [![Go version](https://img.shields.io/github/go-mod/go-version/example/your-service-go)](go.mod)
 [![CI](https://github.com/example/your-service-go/actions/workflows/ci.yml/badge.svg)](https://github.com/example/your-service-go/actions/workflows/ci.yml)

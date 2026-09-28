@@ -1,0 +1,79 @@
+openapi: 3.1.0
+info:
+  title: Example Widget API
+  version: 0.1.0
+  description: >-
+    Synthetic sample contract for the Go third-party service client template.
+    The endpoint, authentication scheme, and data model are placeholders for
+    demonstrating generated API reference pages. They do not describe a real
+    service and must be replaced before publishing a derived library.
+servers:
+  - url: https://api.example.invalid/v1
+    description: Reserved placeholder host; replace for a real service.
+security:
+  - bearerAuth: []
+tags:
+  - name: Widgets
+    description: Synthetic sample operations for a widget resource.
+paths:
+  /widgets/{widgetId}:
+    get:
+      operationId: getWidget
+      summary: Get a widget
+      description: Returns the synthetic widget identified by `widgetId`.
+      tags: [Widgets]
+      parameters:
+        - name: widgetId
+          in: path
+          required: true
+          description: Placeholder identifier for the sample widget.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Synthetic widget response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Widget'
+        '404':
+          description: The placeholder widget was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        default:
+          description: Synthetic error response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Placeholder authentication scheme for the sample contract.
+  schemas:
+    Widget:
+      type: object
+      description: Synthetic widget model used only by this template.
+      required: [id, name]
+      properties:
+        id:
+          type: string
+          description: Placeholder widget identifier.
+        name:
+          type: string
+          description: Placeholder display name.
+        enabled:
+          type: boolean
+          description: Placeholder enabled state.
+    Error:
+      type: object
+      description: Synthetic error model used only by this template.
+      required: [message]
+      properties:
+        message:
+          type: string
+          description: Placeholder error detail.

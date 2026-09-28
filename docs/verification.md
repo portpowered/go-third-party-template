@@ -48,8 +48,10 @@ or claim any provider behavior has been verified.
 The CI workflow builds, tests with the race detector, runs go vet, checks
 gofmt, and confirms go mod tidy leaves module files unchanged. Keep checks
 offline and deterministic. Live endpoint tests should be separate, opt-in, and
-must not require credentials in pull request CI. Pull requests also build the
-documentation site with strict checks. Every push to `main` runs the race-
-enabled tests with coverage instrumentation, includes the HTML coverage report
-and Shields endpoint JSON in the Pages artifact, and deploys the documentation
-site to GitHub Pages; see [website publishing](website.md).
+must not require credentials in pull request CI. Pull requests also generate
+the API reference from `api/openapi.yaml` with the shared Fumadocs action. The
+checked-in widget schema is synthetic example data, not evidence of a real
+provider contract. Every push to `main` runs the race-enabled tests with
+coverage instrumentation, adds the HTML coverage report and Shields endpoint
+JSON to the generated site, and deploys it to GitHub Pages; see
+[website publishing](website.md).
