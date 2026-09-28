@@ -24,8 +24,9 @@ For extracted libraries, report coverage for each public and transport package
 and for non-generated production code in combination. Exclude generated files
 explicitly rather than counting them as uncovered or using generated code to
 inflate the percentage. Reach at least 80% combined coverage and target 90%.
-Use deterministic synthetic inputs to cover success, provider errors, invalid
-responses, cancellation, token rotation, and session lifecycle where applicable.
+Enforce the 80% floor in the extracted library's CI. Use deterministic
+synthetic inputs to cover success, provider errors, invalid responses,
+cancellation, token rotation, and session lifecycle where applicable.
 Review uncovered behavior before adding tests; a percentage alone is not a
 behavioral sign-off. Keep live integration results separate from synthetic
 unit and replay coverage.
