@@ -7,7 +7,12 @@ to generate the Pages site from checked-in API schemas. The template includes
 for any real service. Replace it with reviewed schemas for a derived library.
 The generator builds the schema reference and publishes customer-facing
 operation guides from `docs/guides/` alongside it. Replace the template's
-guide starter with pages for the derived library's supported operations.
+guide starter with MDX pages for the derived library's supported operations.
+Keep the route inventory complete: every outbound HTTP endpoint belongs in a
+checked-in OpenAPI file, and non-HTTP wire exchanges need an appropriate
+checked-in protocol schema. Generate wire definitions from those schemas and
+check for drift in CI. Label implementation-derived contracts as such; a route
+used by the client is not automatically a provider-verified specification.
 
 ## Customize the site
 
@@ -18,13 +23,18 @@ repository and module values in the README badges before publishing.
 
 ## Add operation guides
 
-Write customer-facing Markdown or MDX pages under `docs/guides/`. The template
+Write customer-facing MDX pages under `docs/guides/`. The template
 workflow passes `guides-directory: docs/guides` to action `v0.3.0`.
 The action places them in a **Guides** section at `/docs/guides`, alongside the
 schema-generated API reference. Add a `meta.json` file when the guide section
 needs a custom title or page order. See the
 [Python-to-Go migration playbook](python-provider-migration-playbook.md) for the
 required guide content and review steps.
+
+Keep contributor and release process notes in repository Markdown. Before
+release, review every rendered guide and reference page for short, direct copy,
+working navigation, and links to the matching endpoint. Remove duplicate
+repository guide pages and repeated caveats while retaining evidence labels.
 
 ## Enable GitHub Pages
 
