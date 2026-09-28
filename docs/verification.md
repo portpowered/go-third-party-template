@@ -41,6 +41,9 @@ go run ./tools/coverage -profile coverage.out -min 80
 The gate reports each package and a statement-weighted combined percentage.
 It excludes generated files marked `Code generated ... DO NOT EDIT` and files
 named `*.gen.go`; review the exclusions alongside the result.
+Use `-percent-only -min 0` when producing a coverage badge from the same
+non-generated measurement. Pass `-filtered-profile coverage.filtered.out` to
+write a profile for an HTML report that uses the same exclusions.
 
 ## Fixture provenance
 

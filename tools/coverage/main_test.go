@@ -59,10 +59,17 @@ func TestReportUsesStatementWeightsAndExcludesGeneratedFiles(t *testing.T) {
 	if err := os.WriteFile("coverage.out", []byte(profile), 0600); err != nil {
 		t.Fatal(err)
 	}
-	if err := report("coverage.out", 40); err != nil {
+	if err := report("coverage.out", 40, false, "filtered.out"); err != nil {
 		t.Fatalf("40%% should pass: %v", err)
 	}
-	if err := report("coverage.out", 41); err == nil {
+	filtered, err := os.ReadFile("filtered.out")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(string(filtered), "models.gen.go") || !strings.Contains(string(filtered), "client.go") {
+		t.Fatalf("filtered profile has wrong records: %s", filtered)
+	}
+	if err := report("coverage.out", 41, false, ""); err == nil {
 		t.Fatal("41% should fail")
 	}
 }

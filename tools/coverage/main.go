@@ -20,14 +20,16 @@ type totals struct {
 func main() {
 	profile := flag.String("profile", "coverage.out", "Go coverage profile")
 	minimum := flag.Float64("min", 80, "minimum combined statement coverage percent")
+	percentOnly := flag.Bool("percent-only", false, "print only the combined percentage")
+	filteredProfile := flag.String("filtered-profile", "", "write a profile without generated files")
 	flag.Parse()
-	if err := report(*profile, *minimum); err != nil {
+	if err := report(*profile, *minimum, *percentOnly, *filteredProfile); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 }
 
-func report(profile string, minimum float64) error {
+func report(profile string, minimum float64, percentOnly bool, filteredProfile string) error {
 	module, err := modulePath("go.mod")
 	if err != nil {
 		return err
@@ -40,10 +42,12 @@ func report(profile string, minimum float64) error {
 
 	byPackage := make(map[string]totals)
 	generated := make(map[string]bool)
+	var filtered strings.Builder
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		line := scanner.Text()
 		if strings.HasPrefix(line, "mode:") {
+			filtered.WriteString(line + "\n")
 			continue
 		}
 		fields := strings.Fields(line)
@@ -70,6 +74,7 @@ func report(profile string, minimum float64) error {
 		if isGenerated {
 			continue
 		}
+		filtered.WriteString(line + "\n")
 		statements, err := strconv.ParseInt(fields[1], 10, 64)
 		if err != nil || statements < 0 {
 			return fmt.Errorf("invalid statement count in %q", line)
@@ -89,6 +94,11 @@ func report(profile string, minimum float64) error {
 	if err := scanner.Err(); err != nil {
 		return err
 	}
+	if filteredProfile != "" {
+		if err := os.WriteFile(filteredProfile, []byte(filtered.String()), 0600); err != nil {
+			return err
+		}
+	}
 	packages := make([]string, 0, len(byPackage))
 	for name := range byPackage {
 		packages = append(packages, name)
@@ -99,7 +109,7 @@ func report(profile string, minimum float64) error {
 		entry := byPackage[name]
 		combined.all += entry.all
 		combined.covered += entry.covered
-		if entry.all > 0 {
+		if entry.all > 0 && !percentOnly {
 			fmt.Printf("%s: %.1f%% (%d/%d statements)\n", name, percent(entry), entry.covered, entry.all)
 		}
 	}
@@ -107,7 +117,11 @@ func report(profile string, minimum float64) error {
 		return fmt.Errorf("coverage profile has no non-generated pkg statements")
 	}
 	measured := percent(combined)
-	fmt.Printf("combined non-generated pkg coverage: %.1f%% (%d/%d statements)\n", measured, combined.covered, combined.all)
+	if percentOnly {
+		fmt.Printf("%.1f\n", measured)
+	} else {
+		fmt.Printf("combined non-generated pkg coverage: %.1f%% (%d/%d statements)\n", measured, combined.covered, combined.all)
+	}
 	if measured+1e-9 < minimum {
 		return fmt.Errorf("coverage %.1f%% is below %.1f%% minimum", measured, minimum)
 	}
