@@ -13,7 +13,7 @@ account-specific credentials on each account request so one client can serve
 multiple accounts without changing shared authorization state. Return typed
 errors that preserve causes and expose a stable failure kind.
 
-Construct the reusable client from named options or a configuration value.
+Construct the reusable client from named functional options.
 Validate endpoints and conflicting options at construction time. Configuration
 may hold immutable service settings and injected transports; account tokens
 belong in requests or explicit sessions. Do not update shared client fields
