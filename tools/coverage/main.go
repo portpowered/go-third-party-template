@@ -60,7 +60,7 @@ func report(profile string, minimum float64, percentOnly bool, filteredProfile s
 			return fmt.Errorf("invalid coverage location: %q", location)
 		}
 		source := strings.TrimPrefix(strings.ReplaceAll(location[:colon], "\\", "/"), module+"/")
-		if !strings.HasPrefix(source, "pkg/") {
+		if !strings.HasPrefix(source, "pkg/") || strings.HasPrefix(source, "pkg/testing/") {
 			continue
 		}
 		isGenerated, ok := generated[source]
