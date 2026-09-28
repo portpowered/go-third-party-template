@@ -49,6 +49,7 @@ The CI workflow builds, tests with the race detector, runs go vet, checks
 gofmt, and confirms go mod tidy leaves module files unchanged. Keep checks
 offline and deterministic. Live endpoint tests should be separate, opt-in, and
 must not require credentials in pull request CI. Pull requests also build the
-documentation site with strict checks. Pushes to `main` publish coverage
-reports to the repository wiki and documentation to GitHub Pages; see
-[website publishing](website.md).
+documentation site with strict checks. Every push to `main` runs the race-
+enabled tests with coverage instrumentation, includes the HTML coverage report
+and Shields endpoint JSON in the Pages artifact, and deploys the documentation
+site to GitHub Pages; see [website publishing](website.md).

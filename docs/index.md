@@ -16,6 +16,6 @@ provider client, verify protocol behavior, and prepare a Go module release.
 - [Releasing](releasing.md) covers module versioning and release verification.
 - [Website publishing](website.md) explains how this site is built and deployed.
 
-The generated coverage report is published to the repository wiki after pushes
-to `main`. Find it through the coverage badge in the
-[repository README](https://github.com/example/your-service-go).
+The generated coverage report and badge data are published with this site after
+pushes to `main`. Find the report through the coverage badge in the repository
+README.

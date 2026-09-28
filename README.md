@@ -8,7 +8,7 @@ the corresponding values in `mkdocs.yml`. Review the included Apache-2.0
 
 [![Go version](https://img.shields.io/github/go-mod/go-version/example/your-service-go)](go.mod)
 [![CI](https://github.com/example/your-service-go/actions/workflows/ci.yml/badge.svg)](https://github.com/example/your-service-go/actions/workflows/ci.yml)
-[![Coverage](https://github.com/example/your-service-go/wiki/coverage.svg)](https://raw.githack.com/wiki/example/your-service-go/coverage.html)
+[![Coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fexample.github.io%2Fyour-service-go%2Fcoverage.json)](https://example.github.io/your-service-go/coverage.html)
 [![Latest release](https://img.shields.io/github/v/release/example/your-service-go)](https://github.com/example/your-service-go/releases/latest)
 [![Go Reference](https://pkg.go.dev/badge/github.com/example/your-service-go.svg)](https://pkg.go.dev/github.com/example/your-service-go)
 [![License](https://img.shields.io/github/license/example/your-service-go)](LICENSE)

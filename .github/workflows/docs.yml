@@ -3,11 +3,6 @@ name: Documentation
 on:
   push:
     branches: [main]
-    paths:
-      - 'docs/**'
-      - 'mkdocs.yml'
-      - 'requirements-docs.txt'
-      - '.github/workflows/docs.yml'
   pull_request:
     branches: [main]
     paths:
@@ -29,17 +24,57 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    env:
+      GOWORK: 'off'
+      GOTOOLCHAIN: local
     steps:
       - uses: actions/checkout@v7
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
       - uses: actions/setup-python@v7
         with:
           python-version: '3.x'
           cache: pip
           cache-dependency-path: requirements-docs.txt
+      - name: Test with coverage
+        if: github.event_name != 'pull_request'
+        run: go test -race -coverprofile=coverage.out ./...
       - name: Install documentation dependencies
         run: python -m pip install -r requirements-docs.txt
       - name: Build documentation site
         run: python -m mkdocs build --strict
+      - name: Generate coverage report and badge data
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          go tool cover -html=coverage.out -o site/coverage.html
+          coverage="$(go tool cover -func=coverage.out | awk '$1 == "total:" {print $3}')"
+          coverage="${coverage%\%}"
+          if awk -v value="$coverage" 'BEGIN {exit !(value >= 90)}'; then
+            color=brightgreen
+          elif awk -v value="$coverage" 'BEGIN {exit !(value >= 75)}'; then
+            color=yellow
+          else
+            color=red
+          fi
+          python - "$coverage" "$color" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          coverage, color = sys.argv[1:]
+          Path("site/coverage.json").write_text(
+              json.dumps({
+                  "schemaVersion": 1,
+                  "label": "coverage",
+                  "message": f"{coverage}%",
+                  "color": color,
+              }, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          PY
       - name: Upload Pages artifact
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v5

@@ -1,9 +1,9 @@
 # Documentation website
 
 The Markdown files in `docs/` are built with MkDocs. Pull requests build the
-site in strict mode, so broken navigation and links fail CI. Pushes to `main`
-that change documentation configuration or content build the site and publish
-it to GitHub Pages.
+site in strict mode, so broken navigation and links fail CI. Every push to
+`main` runs the race-enabled test suite, builds the site, adds a Go coverage
+report and badge data, and publishes the result to GitHub Pages.
 
 ## Customize the site
 
@@ -15,18 +15,20 @@ specific to the library's supported API and documentation.
 ## Enable GitHub Pages
 
 In the repository settings, open **Pages** and set the publishing source to
-**GitHub Actions**. The `Documentation` workflow then deploys the generated
-site when documentation changes reach `main`, or when manually started from
-the `main` branch in the Actions tab. The workflow exposes the published URL as
-its deployment environment URL.
+**GitHub Actions**. The `Documentation` workflow deploys the generated site on
+every push to `main`, or when manually started from the `main` branch in the
+Actions tab. The workflow exposes the published URL as its deployment
+environment URL.
 
-## Publish coverage reports
+## Coverage report and badge
 
-The CI workflow measures Go test coverage on pushes to `main` and publishes an
-HTML report and badge to the repository wiki. Enable the repository wiki and
-allow the workflow to write repository contents. The README's coverage badge
-links to that generated report. Coverage reporting is skipped for pull
-requests, so unmerged changes do not update the public report.
+On each `main` push, the workflow runs race-enabled Go tests with coverage,
+writes the HTML report to `site/coverage.html`, and creates `site/coverage.json`
+for the Shields endpoint badge. Both files are included in the Pages
+deployment, so the workflow needs no repository content write permission.
+Coverage generation is skipped for pull requests; pull requests still build
+the documentation in strict mode. The README badge links to the generated
+report.
 
 Run the same documentation build locally with:
 
@@ -34,3 +36,7 @@ Run the same documentation build locally with:
 python -m pip install -r requirements-docs.txt
 mkdocs build --strict
 ```
+
+The `Documentation` workflow contains the coverage report and badge generation
+steps. Replace the example Pages URL in the README badge after customizing the
+site settings.
