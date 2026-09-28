@@ -93,7 +93,9 @@ structures embedded in strings or encrypted wrappers, not just outer envelopes. 
 implementation-derived entry as such. An endpoint with only a schema entry or
 only a generated reference page is incomplete. Add a CI check that detects
 new method-and-path pairs, channels, and call sites without schema entries and
-fails when regeneration changes checked-in output. Add negative tests that
+fails when regeneration changes checked-in output or creates an untracked
+generated file. A plain `git diff` does not detect new untracked model files;
+check tracked drift and untracked generated paths. Add negative tests that
 introduce an unschematized route, change a method while retaining its path,
 and add an unschematized channel; each must fail. Repeat this inventory for
 each library; partial provider catalogues are not a sign-off.
