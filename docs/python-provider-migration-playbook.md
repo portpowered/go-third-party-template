@@ -278,8 +278,9 @@ application workflows and persistence in the application.
 - [ ] Follow [release guidance](releasing.md) for module versioning, tags, and
   published-module verification.
 - [ ] Have an independent reviewer who did not implement the migration verify
-  each library standard at a named commit. Resolve or track every finding and
-  have the reviewer check the affected fixes before checklist sign-off.
+  each library standard at a named commit. Record every finding, resolve all
+  findings and open checklist items, and have the reviewer check the affected
+  fixes at the final commit before checklist sign-off.
 
 ## Acceptance criteria
 

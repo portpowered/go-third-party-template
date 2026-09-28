@@ -76,10 +76,12 @@ at a specific commit. The reviewer checks each numbered library standard against
 the exported API, schemas and generated files, client call sites, synthetic and
 captured evidence, CI workflows and results, package layout, rendered Pages
 site, and release/history record. Record the reviewer, commit, evidence, and
-each finding in the library checklist. Resolve or explicitly track every
-finding, rerun the affected checks, and ask the reviewer to verify the result
-before marking the independent-review item complete. Keep provider behavior
-that lacks documented account evidence labeled implementation-derived.
+each finding in the library checklist. Keep the independent-review item open
+until every finding and other checklist item is resolved. Tracking an open
+finding is not sign-off. Rerun the affected checks and have the reviewer
+verify the fixes at the final commit before marking the item complete. Keep
+provider behavior that lacks documented account evidence labeled
+implementation-derived.
 
 ## Continuous integration
 
