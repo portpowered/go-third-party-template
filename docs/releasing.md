@@ -16,11 +16,15 @@
 6. Replace the owner, repository, module, and site URL placeholders in the
    README badges, and update the API title and schema paths in
    `.github/workflows/docs.yml`.
-7. Work through all eleven items in `docs/library-standards.md` as a checked
-   and evidenced library-specific migration checklist. In particular, verify
+7. Work through every current item in `docs/library-standards.md` as a checked
+   and evidenced library-specific migration checklist, including independent
+   review by someone who did not implement the migration. In particular, verify
    the `pkg/<provider>` import path, coverage threshold and exclusions,
    option-based initialization, client/session state boundary, every network
    injection seam, and caller-visible token refresh before tagging.
+8. Run schema generation and drift, method/path/channel inventory, race tests,
+   and the minimum coverage gate on the exact commit to tag. Review release-note
+   copy and every link after moving guides into the Pages site.
 
 ## Tag and verify
 
@@ -32,7 +36,8 @@ The release workflow compares the public API with the prior stable tag, applies
 the version policy, runs tests and static checks, downloads the tagged module
 through the public Go module proxy in a separate temporary module, compiles a
 small consumer against the configured public packages, then publishes GitHub release
-notes. Set the workflow PUBLIC_MODULE to the same path as go.mod and
+notes. It must rerun generation/drift, endpoint inventory, and coverage gates on
+the tag itself before publication. Set the workflow PUBLIC_MODULE to the same path as go.mod and
 PUBLIC_PACKAGES to the exported packages before creating the first tag.
 
 Breaking API changes are allowed when the major version increases. Before v1,

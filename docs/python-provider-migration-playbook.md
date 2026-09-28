@@ -81,8 +81,13 @@ supports.
   response, and internal model structures. Generate the Go model types from
   those schemas and migrate implementation code to use them instead of
   maintaining duplicate handwritten wire or internal structs.
+- [ ] Inventory nested event properties, query/header names, and structured
+  payloads encoded inside strings or encrypted wrappers; generate their wire
+  models and constants from the checked-in schemas too.
 - [ ] Check in the generation configuration and command, and add a CI check
   that fails when regenerating the models changes the working tree.
+- [ ] Prove the endpoint gate fails for an unschematized method/path, a changed
+  method on an existing path, and an unschematized event channel.
 - [ ] Keep hand-written types only for library behavior or intentional semantic
   mappings that are not represented by the schemas; document those mappings
   and keep conversions at a clear boundary.
@@ -245,8 +250,9 @@ application workflows and persistence in the application.
   inputs, the Go calls involved, expected results, and relevant error or session
   behavior. Label captured behavior, synthetic examples, and unverified
   assumptions separately.
-- [ ] Add the guides directory to the GitHub Pages build and review the built
-  site navigation and guide links alongside the generated API reference. See
+- [ ] Add the guides directory to the GitHub Pages build and review navigation
+  and internal links across the whole rendered site, plus external and release
+  links, alongside the generated API reference. See
   [website publishing](website.md) for the action input and directory layout.
 - [ ] Provide a compiling example that uses a context and demonstrates typed
   error handling without real credentials.
@@ -271,6 +277,9 @@ application workflows and persistence in the application.
   captures out of the repository.
 - [ ] Follow [release guidance](releasing.md) for module versioning, tags, and
   published-module verification.
+- [ ] Have an independent reviewer who did not implement the migration verify
+  each library standard at a named commit. Resolve or track every finding and
+  have the reviewer check the affected fixes before checklist sign-off.
 
 ## Acceptance criteria
 
@@ -296,3 +305,5 @@ The migration is ready for review when all of the following are true:
   and describe supported behavior with evidence labels.
 - [ ] `make check` and the release readiness steps pass, and the reviewed public
   API contains only intentional exports.
+- [ ] The independent standards review and exact-tag schema, endpoint, and
+  coverage gates are recorded before release.

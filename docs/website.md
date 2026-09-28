@@ -33,7 +33,9 @@ required guide content and review steps.
 
 Keep contributor and release process notes in repository Markdown. Before
 release, review every rendered guide and reference page for short, direct copy,
-working navigation, and links to the matching endpoint. Remove duplicate
+working navigation, and links to the matching endpoint. Check internal links
+across the entire rendered site, including the root and generated references;
+review external destinations and release-note URLs separately. Remove duplicate
 repository guide pages and repeated caveats while retaining evidence labels.
 
 ## Enable GitHub Pages

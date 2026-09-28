@@ -69,17 +69,38 @@ behavior.
 The template includes guidance directories only; it does not contain captures
 or claim any provider behavior has been verified.
 
+## Independent standards review
+
+Assign a reviewer who did not implement the migration to inspect the library
+at a specific commit. The reviewer checks each numbered library standard against
+the exported API, schemas and generated files, client call sites, synthetic and
+captured evidence, CI workflows and results, package layout, rendered Pages
+site, and release/history record. Record the reviewer, commit, evidence, and
+each finding in the library checklist. Resolve or explicitly track every
+finding, rerun the affected checks, and ask the reviewer to verify the result
+before marking the independent-review item complete. Keep provider behavior
+that lacks documented account evidence labeled implementation-derived.
+
 ## Continuous integration
 
 Before signing off schema generation, list every outbound HTTP method and path,
 GraphQL operation, event channel, stream frame, signaling route, and other wire
 exchange the client can initiate or consume. Match each inventory row to a
 checked-in schema entry, its generated endpoint definition and wire types, and
-the client call site that uses them. Mark any implementation-derived entry as
-such. An endpoint with only a schema entry or only a generated reference page
-is incomplete. Add a CI check that detects new call sites without schema
-entries and fails when regeneration changes checked-in output. Repeat this
-inventory for each library; partial provider catalogues are not a sign-off.
+the client call site that uses them. Include query/header parameter names,
+nested event and protocol-specific payload properties, and JSON or other
+structures embedded in strings or encrypted wrappers, not just outer envelopes. Mark any
+implementation-derived entry as such. An endpoint with only a schema entry or
+only a generated reference page is incomplete. Add a CI check that detects
+new method-and-path pairs, channels, and call sites without schema entries and
+fails when regeneration changes checked-in output. Add negative tests that
+introduce an unschematized route, change a method while retaining its path,
+and add an unschematized channel; each must fail. Repeat this inventory for
+each library; partial provider catalogues are not a sign-off.
+
+Run the same schema generation, drift, route/channel inventory, and minimum
+coverage gates on the exact release tag commit. Passing a prior `main` run is
+not evidence that a different tag commit meets the release standard.
 
 The CI workflow builds, tests with the race detector, runs go vet, checks
 gofmt, and confirms go mod tidy leaves module files unchanged. Keep checks
