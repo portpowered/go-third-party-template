@@ -37,11 +37,12 @@ jobs:
         if: github.event_name != 'pull_request'
         run: go test -race -coverprofile=coverage.out ./...
       - name: Build API documentation site
-        uses: portpowered/api-docs-website-github-action@v0.2.0
+        uses: portpowered/api-docs-website-github-action@v0.3.0
         with:
           title: Example Service API Reference
           openapi: api/openapi.yaml
           discover: false
+          guides-directory: docs/guides
           output: site
       - name: Generate coverage report and badge data
         if: github.event_name != 'pull_request'

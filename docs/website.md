@@ -5,8 +5,9 @@ The `Documentation` workflow uses the shared
 to generate the Pages site from checked-in API schemas. The template includes
 `api/openapi.yaml` as a clearly synthetic widget example; it is not a contract
 for any real service. Replace it with reviewed schemas for a derived library.
-The generator builds the schema reference, while the guides in `docs/` remain
-repository documentation.
+The generator builds the schema reference and publishes customer-facing
+operation guides from `docs/guides/` alongside it. Replace the template's
+guide starter with pages for the derived library's supported operations.
 
 ## Customize the site
 
@@ -14,6 +15,16 @@ Update the workflow's `title` and schema paths when adapting the template. The
 action derives the GitHub Pages project base path from the repository name, so
 the workflow does not need a repository-specific path. Replace the example
 repository and module values in the README badges before publishing.
+
+## Add operation guides
+
+Write customer-facing Markdown or MDX pages under `docs/guides/`. The template
+workflow passes `guides-directory: docs/guides` to action `v0.3.0`.
+The action places them in a **Guides** section at `/docs/guides`, alongside the
+schema-generated API reference. Add a `meta.json` file when the guide section
+needs a custom title or page order. See the
+[Python-to-Go migration playbook](python-provider-migration-playbook.md) for the
+required guide content and review steps.
 
 ## Enable GitHub Pages
 
@@ -34,13 +45,14 @@ pull requests. The README badge links to the generated report.
 ## Build locally
 
 The shared action repository contains the same generator used in CI. Check out
-the `v0.2.0` tag and run `npm ci` in that repository. From its root, run the
+the `v0.3.0` tag and run `npm ci` in that repository. From its root, run the
 build with the source repository and output directory set explicitly:
 
 ```sh
 API_DOCS_SOURCE=/absolute/path/to/your-service-go \
 API_DOCS_OPENAPI=api/openapi.yaml \
 API_DOCS_DISCOVER=false \
+API_DOCS_GUIDES=docs/guides \
 API_DOCS_OUTPUT=/absolute/path/to/your-service-go/site \
 npm run build
 ```

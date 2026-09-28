@@ -77,10 +77,20 @@ supports.
   tokens, long polling, WebSocket messages, or idempotency keys.
 - [ ] Decide which malformed or partial responses should produce a typed error.
 - [ ] Compare each claim with the evidence from task 2 and label gaps clearly.
+- [ ] Treat the checked-in schemas as the source of truth for provider request,
+  response, and internal model structures. Generate the Go model types from
+  those schemas and migrate implementation code to use them instead of
+  maintaining duplicate handwritten wire or internal structs.
+- [ ] Check in the generation configuration and command, and add a CI check
+  that fails when regenerating the models changes the working tree.
+- [ ] Keep hand-written types only for library behavior or intentional semantic
+  mappings that are not represented by the schemas; document those mappings
+  and keep conversions at a clear boundary.
 
-Keep Go wire structs private to the transport package. Convert them to public
-library types at the boundary so provider JSON tags do not become the Go API.
-See [client design](client-design.md) for the root package and transport split.
+Keep generated wire types inside the implementation boundary unless callers
+need them as part of the public API. When a public library type has different
+semantics from the provider schema, convert explicitly at the boundary. See
+[client design](client-design.md) for the root package and transport split.
 
 ## 4. Map the Python API to a Go API
 
@@ -230,6 +240,14 @@ application workflows and persistence in the application.
   names, and example provider operations.
 - [ ] Document supported operations, authentication inputs, timeouts, errors,
   concurrency guarantees, and any session lifecycle.
+- [ ] Write customer-facing operation guides in `docs/guides/` that walk through
+  the important supported tasks, including setup and authentication, required
+  inputs, the Go calls involved, expected results, and relevant error or session
+  behavior. Label captured behavior, synthetic examples, and unverified
+  assumptions separately.
+- [ ] Add the guides directory to the GitHub Pages build and review the built
+  site navigation and guide links alongside the generated API reference. See
+  [website publishing](website.md) for the action input and directory layout.
 - [ ] Provide a compiling example that uses a context and demonstrates typed
   error handling without real credentials.
 - [ ] Label unsupported, unverified, synthetic, or historical behavior clearly.
@@ -262,6 +280,9 @@ The migration is ready for review when all of the following are true:
   application storage, scheduling, or orchestration dependency.
 - [ ] Every supported operation has a public Go request/result contract and a
   recorded evidence source; unresolved behavior is labeled as such.
+- [ ] Schema-defined provider and internal models are generated reproducibly,
+  implementation code uses those generated types, and CI checks for stale
+  generated output.
 - [ ] Captured, synthetic, and historical material is stored separately and
   sensitive values have been removed.
 - [ ] Authentication, transport, failure mapping, cancellation, and concurrency
@@ -271,5 +292,7 @@ The migration is ready for review when all of the following are true:
 - [ ] The application adapter covers the inventory matrix and the application
   no longer needs the duplicated Python provider implementation.
 - [ ] Documentation examples compile from a separate consumer module.
+- [ ] Customer operation guides are published under the GitHub Pages docs site
+  and describe supported behavior with evidence labels.
 - [ ] `make check` and the release readiness steps pass, and the reviewed public
   API contains only intentional exports.
