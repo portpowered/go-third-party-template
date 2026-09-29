@@ -11,7 +11,13 @@ Apply these requirements when creating a library from this template:
    **ALL** endpoint definitions, method/path pairs, parameter and header names, channel names, and
    wire request/response types from those schemas. Include nested event properties and payloads
    serialized inside strings or encrypted wrappers; use generated artifacts at every wire boundary,
-   and do not sign off while a handwritten wire definition or model remains. Fail CI on generation
+   and do not sign off while a handwritten wire definition or model remains.
+   Include active network calls made by pinned third-party dependencies, even when the library only
+   supplies a transport wrapper. Keep their contracts in separate checked-in external schemas and
+   source-matched protocol files; inventory the exact dependency version, host, method, path, framed
+   message, and call site. A narrow source-gate exception may identify a verified wrapper, but it
+   must reject unlisted dependency traffic and must not bypass schema or paired replay checks.
+   Audit non-HTTP sockets separately from HTTP RoundTrippers. Fail CI on generation
    drift or an uncovered method-and-path pair, channel, or call site. The source gate must pair each
    generated operation or channel with the target at the actual wire call site after evaluating
    supported route transformations; checking only a constructor or raw literals is insufficient.
@@ -61,7 +67,7 @@ Apply these requirements when creating a library from this template:
 7. Put the reusable public provider package under `pkg/<provider>` and its private wire types under an appropriate `internal` package. Keep examples, generated models, and transport packages in clear, separate locations. Verify public import paths from a separate consumer module.
 8. Initialize clients through explicit functional options (for example `NewClient(WithBaseURL(...), WithHTTPClient(...))`) with sensible defaults and validation. Keep account credentials out of reusable client configuration when the client serves multiple accounts.
 9. Keep the reusable client stateless with respect to accounts and connections. Return explicit session objects for login, event streams, sockets, RTC, or other stateful lifecycles; make ownership, close, errors, and token state visible to callers.
-10. Allow callers to inject the transport at every network edge the library uses, including HTTP, HTTP/2, WebSocket, MQTT, and RTC signaling as applicable. Test request and response behavior through those seams without real credentials or network access.
+10. Allow callers to inject the transport at every network edge the library uses, including HTTP, HTTP/2, WebSocket, MQTT, RTC signaling, and sockets opened by dependencies as applicable. A configurable concrete dialer is insufficient when it cannot substitute an offline connection; provide a connection-producing dial hook or equivalent seam and test the actual framed request and response through it without real credentials or network access.
 11. Expose token exchange and refresh as explicit operations that return the current credentials to the caller. Do not silently refresh or retain updated tokens inside a reusable client; document caller storage and renewal responsibilities.
 12. Publish all customer-facing guides as MDX files under `docs/guides/` in the GitHub Pages site. Link guides to the matching generated reference pages. Keep separate repository Markdown only for contributor and release process notes; check internal links from **all** rendered pages, including the site root and generated references, and review external destinations and release-note links after a docs migration.
 13. Before release, edit every published page for concise copy: remove repeated caveats, stale claims, and links to duplicate repository documents; keep each page's purpose, evidence status, and next action clear. Review the rendered Pages site, not just the source files. Check release-note copy and URLs against the published guide locations.

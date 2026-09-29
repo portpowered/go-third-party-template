@@ -117,7 +117,14 @@ the client call site that uses them. Include query/header parameter names,
 nested event and protocol-specific payload properties, and JSON or other
 structures embedded in strings or encrypted wrappers, not just outer envelopes. Mark any
 implementation-derived entry as such. An endpoint with only a schema entry or
-only a generated reference page is incomplete. Add a CI check that detects
+only a generated reference page is incomplete.
+Inspect pinned dependencies for network calls as well as repository code. Put
+active external HTTP routes and binary message definitions in separate checked-in
+schemas or protocol files, and record the exact dependency version and source
+paths. A forwarding RoundTripper needs a fail-closed route inventory and paired
+request/response replay; it cannot stand in for a schema. Trace direct TLS or TCP
+dials outside that wrapper and provide an injectable connection seam so their
+framed exchanges can be replayed offline. Add a CI check that detects
 new method-and-path pairs, channels, and call sites without schema entries and
 fails when regeneration changes checked-in output or creates an untracked
 generated file. A plain `git diff` does not detect new untracked model files;
