@@ -9,9 +9,19 @@ gofmt -w .
 make check
 ```
 
-make check builds every package and example, runs go vet, and runs tests with
-the race detector. CI also checks formatting and module metadata on each pull
-request.
+`make lint` runs `go vet ./...` and the pinned golangci-lint v2 release from
+CI. `.golangci.yml` must keep the literal `linters.default: all`; CI runs every
+repository package, treats findings as failures, and does not filter to new
+issues. `make check` runs that lint target, builds every package and example,
+and runs tests with the race detector. CI also checks formatting and module
+metadata on each pull request.
+
+Keep all linters enabled. If a finding requires an exception, scope it to the
+specific rule and affected path and explain the reason in a config exclusion or
+beside the source annotation. Never set the issue exit code to zero or continue
+after a lint failure. A reviewer who did not implement the change confirms the
+passing blocking CI result for the exact final commit before checklist item 5
+is checked.
 
 CI reports public API changes against the pull request base. The report is
 non-blocking so reviewers can decide whether an intentional break is appropriate.
@@ -120,10 +130,12 @@ Run the same schema generation, drift, route/channel inventory, and minimum
 coverage gates on the exact release tag commit. Passing a prior `main` run is
 not evidence that a different tag commit meets the release standard.
 
-The CI workflow builds, tests with the race detector, runs go vet, checks
-gofmt, and confirms go mod tidy leaves module files unchanged. Keep checks
-offline and deterministic. Live endpoint tests should be separate, opt-in, and
-must not require credentials in pull request CI. Pull requests also generate
+The CI workflow installs the exact golangci-lint v2 version recorded in the
+workflow and runs all linters over the full repository as a blocking gate. It
+also builds, tests with the race detector, runs go vet, checks gofmt, and
+confirms go mod tidy leaves module files unchanged. Keep checks offline and
+deterministic. Live endpoint tests should be separate, opt-in, and must not
+require credentials in pull request CI. Pull requests also generate
 the API reference from `api/openapi.yaml` with the shared Fumadocs action. The
 checked-in widget schema is synthetic example data, not evidence of a real
 provider contract. Every push to `main` runs the race-enabled tests with

@@ -1,4 +1,5 @@
 GO ?= go
+GOLANGCI_LINT ?= golangci-lint
 PUBLIC_MODULE ?= github.com/example/your-service-go
 PUBLIC_PACKAGES ?= .,httpclient
 
@@ -15,6 +16,7 @@ test:
 
 lint:
 	$(GO) vet ./...
+	$(GOLANGCI_LINT) run --timeout=5m ./...
 
 fmt:
 	$(GO) fmt ./...

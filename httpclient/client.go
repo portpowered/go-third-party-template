@@ -4,6 +4,7 @@ package httpclient
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -13,6 +14,8 @@ import (
 )
 
 const maxResponseBytes = 1 << 20
+
+const getWidgetOperation = "GetWidget"
 
 // HTTPDoer is the part of net/http.Client used by this package.
 //
@@ -42,19 +45,13 @@ type Client struct {
 func New(options Options) (*Client, error) {
 	baseURL, err := url.Parse(options.BaseURL)
 	if err != nil {
-		return nil, &service.Error{
-			Operation: "New",
-			Kind:      service.ErrorKindConfiguration,
-			Cause:     err,
-		}
+		return nil, clientError("New", service.ErrorKindConfiguration, 0, "", err)
 	}
+
 	if (baseURL.Scheme != "https" && baseURL.Scheme != "http") ||
 		baseURL.Host == "" || baseURL.User != nil || baseURL.RawQuery != "" ||
 		baseURL.Fragment != "" {
-		return nil, &service.Error{
-			Operation: "New",
-			Kind:      service.ErrorKindConfiguration,
-		}
+		return nil, clientError("New", service.ErrorKindConfiguration, 0, "", nil)
 	}
 
 	httpClient := options.HTTPClient
@@ -71,88 +68,81 @@ func (client *Client) GetWidget(
 	request service.GetWidgetRequest,
 ) (service.Widget, error) {
 	if ctx == nil || request.ID == "" {
-		return service.Widget{}, &service.Error{
-			Operation: "GetWidget",
-			Kind:      service.ErrorKindInvalidRequest,
-		}
+		return service.Widget{}, clientError(getWidgetOperation, service.ErrorKindInvalidRequest, 0, "", nil)
 	}
 
 	endpoint, err := widgetURL(client.baseURL, request.ID)
 	if err != nil {
-		return service.Widget{}, &service.Error{
-			Operation: "GetWidget",
-			Kind:      service.ErrorKindInvalidRequest,
-			Cause:     err,
-		}
+		return service.Widget{}, clientError(getWidgetOperation, service.ErrorKindInvalidRequest, 0, "", err)
 	}
 
-	httpRequest, err := http.NewRequestWithContext(ctx, http.MethodGet, endpoint.String(), nil)
+	httpRequest, err := newWidgetRequest(ctx, endpoint, request.Auth.AccessToken)
 	if err != nil {
-		return service.Widget{}, &service.Error{
-			Operation: "GetWidget",
-			Kind:      service.ErrorKindInvalidRequest,
-			Cause:     err,
-		}
-	}
-	httpRequest.Header.Set("Accept", "application/json")
-	if request.Auth.AccessToken != "" {
-		httpRequest.Header.Set("Authorization", "Bearer "+request.Auth.AccessToken)
+		return service.Widget{}, clientError(getWidgetOperation, service.ErrorKindInvalidRequest, 0, "", err)
 	}
 
 	response, err := client.httpClient.Do(httpRequest)
 	if err != nil {
-		return service.Widget{}, &service.Error{
-			Operation: "GetWidget",
-			Kind:      service.ErrorKindTransport,
-			Cause:     err,
-		}
+		return service.Widget{}, clientError(getWidgetOperation, service.ErrorKindTransport, 0, "", err)
 	}
+
 	if response == nil {
-		return service.Widget{}, &service.Error{
-			Operation: "GetWidget",
-			Kind:      service.ErrorKindTransport,
-		}
+		return service.Widget{}, clientError(getWidgetOperation, service.ErrorKindTransport, 0, "", nil)
 	}
+
+	if response.Body != nil {
+		defer func() { _ = response.Body.Close() }()
+	}
+
+	return decodeWidgetResponse(response)
+}
+
+func newWidgetRequest(ctx context.Context, endpoint *url.URL, accessToken string) (*http.Request, error) {
+	httpRequest, err := http.NewRequestWithContext(ctx, http.MethodGet, endpoint.String(), nil)
+	if err != nil {
+		return nil, fmt.Errorf("create widget request: %w", err)
+	}
+
+	httpRequest.Header.Set("Accept", "application/json")
+
+	if accessToken != "" {
+		httpRequest.Header.Set("Authorization", "Bearer "+accessToken)
+	}
+
+	return httpRequest, nil
+}
+
+func decodeWidgetResponse(response *http.Response) (service.Widget, error) {
 	if response.Body == nil {
-		return service.Widget{}, &service.Error{
-			Operation: "GetWidget",
-			Kind:      service.ErrorKindInvalidResponse,
-		}
+		return service.Widget{}, clientError(getWidgetOperation, service.ErrorKindInvalidResponse, 0, "", nil)
 	}
-	defer func() { _ = response.Body.Close() }()
 
 	if response.StatusCode < http.StatusOK || response.StatusCode >= http.StatusMultipleChoices {
-		return service.Widget{}, statusError("GetWidget", response)
+		return service.Widget{}, statusError(getWidgetOperation, response)
 	}
 
 	body, err := io.ReadAll(io.LimitReader(response.Body, maxResponseBytes+1))
 	if err != nil {
-		return service.Widget{}, &service.Error{
-			Operation: "GetWidget",
-			Kind:      service.ErrorKindInvalidResponse,
-			Cause:     err,
-		}
-	}
-	if len(body) > maxResponseBytes {
-		return service.Widget{}, &service.Error{
-			Operation: "GetWidget",
-			Kind:      service.ErrorKindInvalidResponse,
-		}
+		return service.Widget{}, clientError(getWidgetOperation, service.ErrorKindInvalidResponse, 0, "", err)
 	}
 
-	var wire widgetResponse
-	if err := json.Unmarshal(body, &wire); err != nil {
-		return service.Widget{}, &service.Error{
-			Operation: "GetWidget",
-			Kind:      service.ErrorKindInvalidResponse,
-			Cause:     err,
-		}
+	if len(body) > maxResponseBytes {
+		return service.Widget{}, clientError(getWidgetOperation, service.ErrorKindInvalidResponse, 0, "", nil)
 	}
+
+	return decodeWidget(body)
+}
+
+func decodeWidget(body []byte) (service.Widget, error) {
+	var wire widgetResponse
+
+	err := json.Unmarshal(body, &wire)
+	if err != nil {
+		return service.Widget{}, clientError(getWidgetOperation, service.ErrorKindInvalidResponse, 0, "", err)
+	}
+
 	if wire.ID == "" {
-		return service.Widget{}, &service.Error{
-			Operation: "GetWidget",
-			Kind:      service.ErrorKindInvalidResponse,
-		}
+		return service.Widget{}, clientError(getWidgetOperation, service.ErrorKindInvalidResponse, 0, "", nil)
 	}
 
 	return service.Widget{ID: wire.ID, Name: wire.Name}, nil
@@ -166,17 +156,21 @@ type widgetResponse struct {
 func widgetURL(baseURL *url.URL, id string) (*url.URL, error) {
 	endpoint := *baseURL
 	rawPath := strings.TrimRight(baseURL.EscapedPath(), "/") + "/widgets/" + url.PathEscape(id)
+
 	path, err := url.PathUnescape(rawPath)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("unescape widget URL path: %w", err)
 	}
+
 	endpoint.Path = path
 	endpoint.RawPath = rawPath
+
 	return &endpoint, nil
 }
 
 func statusError(operation string, response *http.Response) *service.Error {
 	kind := service.ErrorKindUnexpectedStatus
+
 	switch response.StatusCode {
 	case http.StatusUnauthorized, http.StatusForbidden:
 		kind = service.ErrorKindUnauthorized
@@ -189,10 +183,22 @@ func statusError(operation string, response *http.Response) *service.Error {
 			kind = service.ErrorKindServer
 		}
 	}
+
+	return clientError(operation, kind, response.StatusCode, response.Header.Get("X-Request-ID"), nil)
+}
+
+func clientError(
+	operation string,
+	kind service.ErrorKind,
+	statusCode int,
+	requestID string,
+	cause error,
+) *service.Error {
 	return &service.Error{
 		Operation:  operation,
 		Kind:       kind,
-		StatusCode: response.StatusCode,
-		RequestID:  response.Header.Get("X-Request-ID"),
+		StatusCode: statusCode,
+		RequestID:  requestID,
+		Cause:      cause,
 	}
 }

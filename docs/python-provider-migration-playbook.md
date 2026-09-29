@@ -272,9 +272,11 @@ application workflows and persistence in the application.
 - [ ] Replace the template module path and package names throughout the source,
   examples, tests, and CI/release configuration.
 - [ ] Choose the license and include its license file.
-- [ ] Run `gofmt`, `go mod tidy`, `go vet ./...`, `go test -race ./...`, and
-  `go build ./...`; use `make check` for the template's build, vet, and race
-  test checks.
+- [ ] Run `gofmt`, `go mod tidy`, `make lint`, `go test -race ./...`, and
+  `go build ./...`; `make lint` runs go vet and the pinned golangci-lint v2
+  configuration with literal `linters.default: all` over the full repository.
+  Keep it as a blocking CI gate; any exclusion must be narrow, rule-specific,
+  and justified in configuration or beside a source annotation.
 - [ ] Review API compatibility output and confirm each exported symbol is
   intentional.
 - [ ] In a separate temporary module, fetch the candidate module version and
@@ -286,7 +288,8 @@ application workflows and persistence in the application.
 - [ ] Have an independent reviewer who did not implement the migration verify
   each library standard at a named commit. Record every finding, resolve all
   findings and open checklist items, and have the reviewer check the affected
-  fixes at the final commit before checklist sign-off.
+  fixes at the final commit before checklist sign-off. The reviewer confirms
+  passing blocking CI on that exact commit before checking library standard 5.
 
 ## Acceptance criteria
 

@@ -12,7 +12,13 @@
    provider behavior. Remove any operation the library does not support.
 4. Review the included Apache-2.0 license and confirm it is appropriate for the
    new library before publishing.
-5. Run the checks in verification.md and review the public README examples.
+5. Run `make check` and the checks in verification.md, then review the public
+   README examples. The blocking CI lint gate pins golangci-lint v2, keeps
+   `linters.default: all`, and checks every package. Keep exclusions narrow,
+   rule-specific, and justified in configuration or beside source annotations.
+   Have a reviewer who did not
+   implement the migration confirm the passing CI run for the exact commit
+   before checking library standard 5.
 6. Replace the owner, repository, module, and site URL placeholders in the
    README badges, and update the API title and schema paths in
    `.github/workflows/docs.yml`.
@@ -30,7 +36,9 @@
 
 Use semantic version tags of the form vMAJOR.MINOR.PATCH. Go modules use a
 new major module path for v2 and later releases. Tag a reviewed commit and push
-the tag to start .github/workflows/release.yml.
+the tag to start .github/workflows/release.yml. The release workflow reruns the
+same pinned full-repository all-linters gate on the tag commit before
+publication.
 
 The release workflow compares the public API with the prior stable tag, applies
 the version policy, runs tests and static checks, downloads the tagged module

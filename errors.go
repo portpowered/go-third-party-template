@@ -50,9 +50,11 @@ func (err *Error) Error() string {
 	if err.StatusCode != 0 {
 		message += " (HTTP " + strconv.Itoa(err.StatusCode) + ")"
 	}
+
 	if err.Cause != nil {
 		message += ": " + err.Cause.Error()
 	}
+
 	return message
 }
 
@@ -61,5 +63,6 @@ func (err *Error) Unwrap() error {
 	if err == nil {
 		return nil
 	}
+
 	return err.Cause
 }

@@ -25,6 +25,12 @@ jobs:
         with:
           go-version-file: go.mod
           cache: true
+      - name: Lint (all linters)
+        uses: golangci/golangci-lint-action@v9
+        with:
+          version: v2.14.0
+          only-new-issues: false
+          args: --timeout=5m
       - name: Check public API compatibility
         env:
           VERSION: ${{ github.ref_name }}

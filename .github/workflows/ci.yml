@@ -26,6 +26,12 @@ jobs:
         with:
           go-version: ${{ matrix.go }}
           cache: true
+      - name: Lint (all linters)
+        uses: golangci/golangci-lint-action@v9
+        with:
+          version: v2.14.0
+          only-new-issues: false
+          args: --timeout=5m
       - name: Build
         run: go build ./...
       - name: Test

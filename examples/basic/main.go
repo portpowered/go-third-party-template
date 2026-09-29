@@ -1,3 +1,4 @@
+// Package main shows a basic service client call.
 package main
 
 import (
@@ -13,7 +14,8 @@ import (
 const requestTimeout = 15 * time.Second
 
 func main() {
-	if err := run(); err != nil {
+	err := run()
+	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
@@ -21,10 +23,11 @@ func main() {
 
 func run() error {
 	client, err := httpclient.New(httpclient.Options{
-		BaseURL: os.Getenv("SERVICE_API_BASE_URL"),
+		BaseURL:    os.Getenv("SERVICE_API_BASE_URL"),
+		HTTPClient: nil,
 	})
 	if err != nil {
-		return err
+		return fmt.Errorf("create service client: %w", err)
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), requestTimeout)
@@ -35,8 +38,13 @@ func run() error {
 		ID:   os.Getenv("SERVICE_WIDGET_ID"),
 	})
 	if err != nil {
-		return err
+		return fmt.Errorf("get widget: %w", err)
 	}
-	fmt.Printf("%s: %s\n", widget.ID, widget.Name)
+
+	_, err = fmt.Fprintf(os.Stdout, "%s: %s\n", widget.ID, widget.Name)
+	if err != nil {
+		return fmt.Errorf("write widget output: %w", err)
+	}
+
 	return nil
 }
