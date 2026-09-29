@@ -143,7 +143,13 @@ Query and header tests cover setter calls, direct index writes, map literals,
 and aliases for `url.Values`, `http.Header`, and custom-header maps. Keys must
 come from generated schema constants. Cover a map returned by a helper, a map
 passed to a mutating helper, and aliases that reach either case; an unverified
-helper must not become a path around the gate.
+helper must not become a path around the gate. Resolve custom-header maps by
+lexical binding: include an outer map with a handwritten key and a nested,
+same-named map with generated keys, then verify the outer map still fails when
+it is passed to transport. For schema-bound `url.Values`, reject both the map
+and aliases passed as arguments or method receivers to unverified helpers where
+handwritten query keys could be added; include a case where the helper adds a
+raw key before the map is encoded.
 
 The network inventory tests reject direct calls to unregistered outbound
 primitives and unregistered network imports. Exercise HTTP convenience calls

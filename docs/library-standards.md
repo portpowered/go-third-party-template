@@ -22,12 +22,15 @@ Apply these requirements when creating a library from this template:
    come from configured or inventoried origins. Exercise lexical shadowing so a same-named local
    variable cannot inherit another scope's generated route. Require generated `QueryParam` and
    `Header` keys for query setters and direct or aliased map writes, map literals, request headers,
-   and custom-header maps. Reject custom-header maps returned from or passed through unverified
-   helpers. Exercise direct outbound network primitives, imports, method values and method
-   expressions, including local and file-scope aliases such as package-level references to transport
-   helpers and injected client methods. Cover request and URL aliases, mutations after construction,
-   aggregate fields and indexed storage, and values escaping to helpers; each uncovered route,
-   channel, or network edge must fail. Distinguish provider-verified contracts from
+   and custom-header maps. Resolve custom-header maps by lexical binding; a nested same-named map
+   with generated keys must not hide an outer raw-key map that is sent. Reject custom-header maps
+   returned from or passed through unverified helpers. Reject schema-bound `url.Values` maps and
+   their aliases when they escape as arguments or receivers to unverified helpers that could add
+   handwritten query keys. Exercise direct outbound network primitives, imports, method values and
+   method expressions, including local and file-scope aliases such as package-level references to
+   transport helpers and injected client methods. Cover request and URL aliases, mutations after
+   construction, aggregate fields and indexed storage, and values escaping to helpers; each
+   uncovered route, channel, or network edge must fail. Distinguish provider-verified contracts from
    implementation-derived contracts and never present the latter as official behavior. Replace the
    template's clearly synthetic widget schema before presenting a provider API as supported
    behavior.
