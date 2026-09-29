@@ -10,7 +10,7 @@ linters:
       rules:
         Main:
           # The example, HTTP client, and their tests intentionally import this module.
-          list-mode: lax
+          list-mode: strict
           allow:
             - $gostd
             - github.com/example/your-service-go
