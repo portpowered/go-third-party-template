@@ -149,7 +149,12 @@ same-named map with generated keys, then verify the outer map still fails when
 it is passed to transport. For schema-bound `url.Values`, reject both the map
 and aliases passed as arguments or method receivers to unverified helpers where
 handwritten query keys could be added; include a case where the helper adds a
-raw key before the map is encoded.
+raw key before the map is encoded. Track query-map provenance by lexical binding
+and latest assignment. Reject a generated empty map reassigned from
+`url.ParseQuery(raw)` before encoding, and reject maps sourced from
+`url.URL.Query()` or `url.ParseQuery` as outbound generated-key maps even when
+the caller later adds generated keys. A nested same-named empty map must not
+transfer its provenance to a different outer binding.
 
 The network inventory tests reject direct calls to unregistered outbound
 primitives and unregistered network imports. Exercise HTTP convenience calls
