@@ -17,17 +17,20 @@ Apply these requirements when creating a library from this template:
    supported route transformations; checking only a constructor or raw literals is insufficient.
    Test negative cases for unschematized endpoints and channels, mismatched methods and paths, and
    targets changed after schema-bound construction, including appended or wrapped paths and invalid
-   formatting. Exercise lexical shadowing so a same-named local variable cannot inherit another
-   scope's generated route. Require generated `QueryParam` and `Header` keys for query setters and
-   direct or aliased map writes, map literals, request headers, and custom-header maps. Reject
-   custom-header maps returned from or passed through unverified helpers. Exercise direct outbound
-   network primitives, imports, method values and method expressions, including local and file-scope
-   aliases such as package-level references to transport helpers and injected client methods. Cover
-   request and URL aliases, mutations after construction, aggregate fields and indexed storage, and
-   values escaping to helpers; each uncovered route, channel, or network edge must fail. Distinguish
-   provider-verified contracts from implementation-derived contracts and never present the latter as
-   official behavior. Replace the template's clearly synthetic widget schema before presenting a
-   provider API as supported behavior.
+   formatting. A generated path does not approve an arbitrary authority in a formatted full URL;
+   accept only an explicitly configured or inventoried authority, and require REST base prefixes to
+   come from configured or inventoried origins. Exercise lexical shadowing so a same-named local
+   variable cannot inherit another scope's generated route. Require generated `QueryParam` and
+   `Header` keys for query setters and direct or aliased map writes, map literals, request headers,
+   and custom-header maps. Reject custom-header maps returned from or passed through unverified
+   helpers. Exercise direct outbound network primitives, imports, method values and method
+   expressions, including local and file-scope aliases such as package-level references to transport
+   helpers and injected client methods. Cover request and URL aliases, mutations after construction,
+   aggregate fields and indexed storage, and values escaping to helpers; each uncovered route,
+   channel, or network edge must fail. Distinguish provider-verified contracts from
+   implementation-derived contracts and never present the latter as official behavior. Replace the
+   template's clearly synthetic widget schema before presenting a provider API as supported
+   behavior.
 5. Run offline build, lint, race, and replay checks before release. Configure golangci-lint v2 with the literal `linters.default: all`, pin its version in CI, and make the full-repository lint run a blocking gate. Do not set `--issues-exit-code=0`, continue after lint failures, or limit CI to new issues. Keep all linters enabled; any exception must name the narrow rule and affected path, give its reason in a config exclusion or beside a source annotation, and receive independent review. Style fixes must preserve persisted example/config JSON keys; lock them with a regression test or document an intentional key migration. A reviewer who did not implement the migration must confirm passing blocking CI on the exact commit before checking item 5. Keep real captures sanitized and separate from synthetic fixtures.
 6. Add deterministic synthetic request, response, error, and session fixtures for supported behavior. Measure coverage of non-generated production code by public and transport package and in combination; enforce at least 80% combined coverage in CI and target 90%. Report generated-code exclusions and remaining uncovered behavior rather than adding tests solely to raise a number.
 7. Put the reusable public provider package under `pkg/<provider>` and its private wire types under an appropriate `internal` package. Keep examples, generated models, and transport packages in clear, separate locations. Verify public import paths from a separate consumer module.

@@ -130,9 +130,14 @@ Test the source gate at the wire call site after route expressions have been
 evaluated. The negative cases must include path appends, wrappers, and invalid
 formatting after a generated route value; lexical shadowing of a route variable
 in a nested scope; and request method or path changes between construction and
-send. Include a positive control for an explicitly supported transformation,
+send. For full URLs, reject a construction such as
+`fmt.Sprintf("https://%s%s", untrustedAuthority, generatedPath)` even when the
+path is generated. Accept only an explicitly approved and inventoried authority
+for event URLs; REST base prefixes must also come from configured or inventoried
+origins. Include a positive control for an explicitly supported transformation,
 such as a generated query map encoded onto its route, so the gate documents its
-accepted boundary.
+accepted boundary. In Alexa's directive URL, `c.authority` is the approved
+authority.
 
 Query and header tests cover setter calls, direct index writes, map literals,
 and aliases for `url.Values`, `http.Header`, and custom-header maps. Keys must
