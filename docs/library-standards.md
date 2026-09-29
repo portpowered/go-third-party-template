@@ -24,8 +24,10 @@ Apply these requirements when creating a library from this template:
    configured or inventoried origins. Exercise lexical shadowing so a same-named local variable
    cannot inherit another scope's generated route. Require generated `QueryParam` and `Header` keys
    for query setters and direct or aliased map writes, map literals, request headers, and
-   custom-header maps. Resolve custom-header maps by lexical binding; a nested same-named map with
-   generated keys must not hide an outer raw-key map that is sent. Reject custom-header maps
+   custom-header maps. Normalize parenthesized map receivers and indexed expressions before checking
+   query/header keys, and reject aliases to query or header `Set`/`Add` method values that could
+   bypass key validation. Resolve custom-header maps by lexical binding; a nested same-named map
+   with generated keys must not hide an outer raw-key map that is sent. Reject custom-header maps
    returned from or passed through unverified helpers. Reject schema-bound `url.Values` maps and
    their aliases when they escape as arguments or receivers to unverified helpers that could add
    handwritten query keys. Track `url.Values` provenance by lexical binding and assignment; discard

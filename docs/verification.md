@@ -160,6 +160,16 @@ and latest assignment. Reject a generated empty map reassigned from
 the caller later adds generated keys. A nested same-named empty map must not
 transfer its provenance to a different outer binding.
 
+Do not allow setter method values for schema-keyed maps to bypass key checking.
+Reject aliases such as `set := params.Set` or `add := params.Add` when the saved
+method is later called with an unchecked key, and cover aliases of
+`req.Header.Set` and `req.Header.Add` as well. Normalize parenthesized receivers
+and indexed expressions before applying the same rule. Include raw-key failures
+for `(params).Set("raw", value)`, `(params).Add("raw", value)`,
+`(params)["raw"]`, `(headers)["Cookie"]`, `(req.Header)["Cookie"]`,
+`(req.Header).Set("Cookie", value)`, and `(req.Header).Add("Cookie", value)`,
+plus a positive control where a parenthesized receiver uses a generated key.
+
 Also reject mutation-capable address and pointer paths for route strings,
 query maps, and header maps. Test taking an address and mutating through a local
 pointer, passing the pointer to an unverified helper, and passing the map or
