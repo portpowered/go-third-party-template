@@ -155,8 +155,12 @@ passed to a mutating helper, and aliases that reach either case; an unverified
 helper must not become a path around the gate. Resolve custom-header maps by
 lexical binding: include an outer map with a handwritten key and a nested,
 same-named map with generated keys, then verify the outer map still fails when
-it is passed to transport. For schema-bound `url.Values`, reject both the map
-and aliases passed as arguments or method receivers to unverified helpers where
+it is passed to transport. Recursively inspect aggregate arguments: reject
+`fill(headerHolder{values: headers})` when `fill` can add a raw key, including
+when the map is nested inside another struct, array, or slice. Allow only a
+direct handoff to a verified, inventoried wire helper whose header writes are
+checked against generated keys. For schema-bound `url.Values`, reject both the
+map and aliases passed as arguments or method receivers to unverified helpers where
 handwritten query keys could be added; include a case where the helper adds a
 raw key before the map is encoded. Track query-map provenance by lexical binding
 and latest assignment. If route logic uses `len(params)`, accept it as a built-in
