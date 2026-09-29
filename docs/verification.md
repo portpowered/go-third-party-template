@@ -141,7 +141,12 @@ for event URLs; REST base prefixes must also come from configured or inventoried
 origins. Include a positive control for an explicitly supported transformation,
 such as a generated query map encoded onto its route, so the gate documents its
 accepted boundary. In Alexa's directive URL, `c.authority` is the approved
-authority.
+authority. Confirm that `c.authority` and REST base URL fields resolve to the
+actual Client receiver for the method; a shadowing local named `c` or a field
+with the same name on another value must not establish trust. An inventoried
+`Client.Do` must likewise resolve to that receiver's injected client field;
+include a failing local `c` shadow for `c.httpClient.Do` or `c.client.Do` and a
+positive control using the actual receiver field.
 
 Query and header tests cover setter calls, direct index writes, map literals,
 and aliases for `url.Values`, `http.Header`, and custom-header maps. Keys must
@@ -154,7 +159,9 @@ it is passed to transport. For schema-bound `url.Values`, reject both the map
 and aliases passed as arguments or method receivers to unverified helpers where
 handwritten query keys could be added; include a case where the helper adds a
 raw key before the map is encoded. Track query-map provenance by lexical binding
-and latest assignment. Reject a generated empty map reassigned from
+and latest assignment. If route logic uses `len(params)`, accept it as a built-in
+only when `len` resolves to the Go builtin; a local function shadowing `len`
+must not qualify. Reject a generated empty map reassigned from
 `url.ParseQuery(raw)` before encoding, and reject maps sourced from
 `url.URL.Query()` or `url.ParseQuery` as outbound generated-key maps even when
 the caller later adds generated keys. A nested same-named empty map must not
@@ -169,6 +176,18 @@ for `(params).Set("raw", value)`, `(params).Add("raw", value)`,
 `(params)["raw"]`, `(headers)["Cookie"]`, `(req.Header)["Cookie"]`,
 `(req.Header).Set("Cookie", value)`, and `(req.Header).Add("Cookie", value)`,
 plus a positive control where a parenthesized receiver uses a generated key.
+Preserve request-header key provenance through `http.Header(req.Header)` and
+subsequent aliases; a handwritten key written through a converted alias must
+still fail. Reject passing a request Header map or its aliases to an unverified
+helper. Include a positive exception only for an explicitly named, inventoried
+helper whose header writes are checked against generated keys.
+
+Generated selectors must resolve to their imported packages rather than local
+values with the same names. Test local shadows of `apiroutes`, the generated
+model-constant package qualifier, `fmt`, and `http`; each must fail to establish
+route, key, formatting, or request-constructor provenance.
+`http.NewRequestWithContext` is trusted only when `http` resolves to the
+`net/http` import. Include controls proving the actual imports are recognized.
 
 Also reject mutation-capable address and pointer paths for route strings,
 query maps, and header maps. Test taking an address and mutating through a local
