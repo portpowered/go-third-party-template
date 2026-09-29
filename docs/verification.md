@@ -126,6 +126,33 @@ introduce an unschematized route, change a method while retaining its path,
 and add an unschematized channel; each must fail. Repeat this inventory for
 each library; partial provider catalogues are not a sign-off.
 
+Test the source gate at the wire call site after route expressions have been
+evaluated. The negative cases must include path appends, wrappers, and invalid
+formatting after a generated route value; lexical shadowing of a route variable
+in a nested scope; and request method or path changes between construction and
+send. Include a positive control for an explicitly supported transformation,
+such as a generated query map encoded onto its route, so the gate documents its
+accepted boundary.
+
+Query and header tests cover setter calls, direct index writes, map literals,
+and aliases for `url.Values`, `http.Header`, and custom-header maps. Keys must
+come from generated schema constants. Cover a map returned by a helper, a map
+passed to a mutating helper, and aliases that reach either case; an unverified
+helper must not become a path around the gate.
+
+The network inventory tests reject direct calls to unregistered outbound
+primitives and unregistered network imports. Exercise HTTP convenience calls
+such as `Get`, `Post`, `PostForm`, and `Head`; sends such as `Do` and
+`RoundTrip`; request constructors; and the dial or upgrade primitives used by
+the library. They also reject primitive method values or method expressions
+captured in local variables or at file scope, including package-level aliases
+for request constructors, injected client sends, and transport helper methods
+such as `(*Client).doRequest`. Exercise request and URL aliases,
+post-construction mutation, storage through struct fields or indexed
+collections, and request or URL values passed to helpers between construction
+and send. Keep an inventoried edge tied to its generated method and route and
+its injected transport.
+
 Run the same schema generation, drift, route/channel inventory, and minimum
 coverage gates on the exact release tag commit. Passing a prior `main` run is
 not evidence that a different tag commit meets the release standard.
