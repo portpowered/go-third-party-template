@@ -43,8 +43,9 @@ Apply these requirements when creating a library from this template:
    cross-function state. Reject unresolved address-taking or pointer/helper escapes for route
    strings, query maps, and header maps that could permit mutation; accept them only when the gate
    proves the value remains safe. Resolve generated selector qualifiers such as `apiroutes`, the
-   model-constant package, and `fmt` to actual imports; `http.NewRequestWithContext` must resolve
-   through the `net/http` import. Treat `len(params)` as a built-in call only when `len` resolves to
+   model-constant package, and `fmt` to their exact expected import paths, not just matching local
+   import names; `http.NewRequestWithContext` must resolve through the exact `net/http` import.
+   Treat `len(params)` as a built-in call only when `len` resolves to
    the Go builtin. An approved authority or base URL field must resolve to the actual Client
    receiver declared by the method. An inventoried `Client.Do` must use that receiver's actual
    injected client field object, not a same-spelled shadowing local. Exercise direct outbound

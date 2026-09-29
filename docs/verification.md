@@ -195,12 +195,18 @@ still fail. Reject passing a request Header map or its aliases to an unverified
 helper. Include a positive exception only for an explicitly named, inventoried
 helper whose header writes are checked against generated keys.
 
-Generated selectors must resolve to their imported packages rather than local
-values with the same names. Test local shadows of `apiroutes`, the generated
-model-constant package qualifier, `fmt`, and `http`; each must fail to establish
-route, key, formatting, or request-constructor provenance.
-`http.NewRequestWithContext` is trusted only when `http` resolves to the
-`net/http` import. Include controls proving the actual imports are recognized.
+Generated selectors must resolve to their exact expected import paths, not only
+to imports with matching local names. Resolve the generated route and model
+package paths from the module and generated package inventory; resolve standard
+library qualifiers to the exact `fmt`, `net/http`, and `net/url` paths. Test
+local shadows of `apiroutes`, the generated model-constant package qualifier,
+`fmt`, `http`, and `url`, plus counterfeit aliases such as
+`import apiroutes "example.com/unverified/routes"` and same-named aliases for
+the model package or standard library; each must fail to establish route, key,
+formatting, query-map, or request-constructor provenance. `http.NewRequestWithContext`
+is trusted only when its qualifier resolves to the actual `net/http` import.
+Include positive controls proving the expected generated paths and standard
+library imports are recognized, including when valid imports use aliases.
 
 Also reject mutation-capable address and pointer paths for route strings,
 query maps, and header maps. Test taking an address and mutating through a local
