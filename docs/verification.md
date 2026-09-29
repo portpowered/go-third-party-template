@@ -159,11 +159,17 @@ it is passed to transport. Recursively inspect aggregate arguments: reject
 `fill(headerHolder{values: headers})` when `fill` can add a raw key, including
 when the map is nested inside another struct, array, or slice. Allow only a
 direct handoff to a verified, inventoried wire helper whose header writes are
-checked against generated keys. For schema-bound `url.Values`, reject both the
-map and aliases passed as arguments or method receivers to unverified helpers where
-handwritten query keys could be added; include a case where the helper adds a
-raw key before the map is encoded. Track query-map provenance by lexical binding
-and latest assignment. If route logic uses `len(params)`, accept it as a built-in
+checked against generated keys. Also reject direct aggregate storage, even when
+no helper is called: store a schema-keyed header map in
+`holder := struct{ values map[string]string }{headers}` and reject a raw write
+such as `holder.values["Cookie"] = "raw"`; store `url.Values` in
+`holders := []url.Values{params}` and reject a write such as
+`holders[0]["raw"] = []string{"x"}`. For schema-bound `url.Values`,
+reject both the map and aliases passed as arguments or method receivers to
+unverified helpers where handwritten query keys could be added; include a case
+where the helper adds a raw key before the map is encoded. Track query-map
+provenance by lexical binding and latest assignment. If route logic uses
+`len(params)`, accept it as a built-in
 only when `len` resolves to the Go builtin; a local function shadowing `len`
 must not qualify. Reject a generated empty map reassigned from
 `url.ParseQuery(raw)` before encoding, and reject maps sourced from

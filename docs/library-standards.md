@@ -36,10 +36,12 @@ Apply these requirements when creating a library from this template:
    their aliases when they escape as arguments or receivers to unverified helpers that could add
    handwritten query keys. Track `url.Values` provenance by lexical binding and assignment; discard
    generated-map trust after reassignment from an untrusted source, and never accept `URL.Query` or
-   `url.ParseQuery` results as outbound generated-key sources. Reject unresolved address-taking or
-   pointer/helper escapes for route strings, query maps, and header maps that could permit mutation;
-   accept them only when the gate proves the value remains safe. Resolve generated selector
-   qualifiers such as `apiroutes`, the model-constant package, and `fmt` to actual imports;
+   `url.ParseQuery` results as outbound generated-key sources. Reject storing schema-keyed query or
+   header maps in aggregate fields or indexed elements, even without a helper call; later field or
+   index writes must not regain trust. Reject unresolved address-taking or pointer/helper escapes
+   for route strings, query maps, and header maps that could permit mutation; accept them only when
+   the gate proves the value remains safe. Resolve generated selector qualifiers such as
+   `apiroutes`, the model-constant package, and `fmt` to actual imports;
    `http.NewRequestWithContext` must resolve through the `net/http` import. Treat `len(params)` as a
    built-in call only when `len` resolves to the Go builtin. An approved authority or base URL field
    must resolve to the actual Client receiver declared by the method. An inventoried `Client.Do`
