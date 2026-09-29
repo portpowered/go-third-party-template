@@ -130,7 +130,11 @@ Test the source gate at the wire call site after route expressions have been
 evaluated. The negative cases must include path appends, wrappers, and invalid
 formatting after a generated route value; lexical shadowing of a route variable
 in a nested scope; and request method or path changes between construction and
-send. For full URLs, reject a construction such as
+send. Trust a route assignment only when it is guaranteed on every control-flow
+path to the send. Include a failure where a generated route is assigned inside
+only one branch of `if useList { ... }` and the send occurs after the branch;
+include a positive control where every branch assigns the same expected
+generated route. For full URLs, reject a construction such as
 `fmt.Sprintf("https://%s%s", untrustedAuthority, generatedPath)` even when the
 path is generated. Accept only an explicitly approved and inventoried authority
 for event URLs; REST base prefixes must also come from configured or inventoried
@@ -155,6 +159,13 @@ and latest assignment. Reject a generated empty map reassigned from
 `url.URL.Query()` or `url.ParseQuery` as outbound generated-key maps even when
 the caller later adds generated keys. A nested same-named empty map must not
 transfer its provenance to a different outer binding.
+
+Also reject mutation-capable address and pointer paths for route strings,
+query maps, and header maps. Test taking an address and mutating through a local
+pointer, passing the pointer to an unverified helper, and passing the map or
+string to an unverified helper that can mutate it. These escapes invalidate
+the checked value through the eventual wire send unless the gate proves the
+pointer path cannot change it.
 
 The network inventory tests reject direct calls to unregistered outbound
 primitives and unregistered network imports. Exercise HTTP convenience calls

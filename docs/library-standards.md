@@ -15,20 +15,24 @@ Apply these requirements when creating a library from this template:
    drift or an uncovered method-and-path pair, channel, or call site. The source gate must pair each
    generated operation or channel with the target at the actual wire call site after evaluating
    supported route transformations; checking only a constructor or raw literals is insufficient.
-   Test negative cases for unschematized endpoints and channels, mismatched methods and paths, and
-   targets changed after schema-bound construction, including appended or wrapped paths and invalid
-   formatting. A generated path does not approve an arbitrary authority in a formatted full URL;
-   accept only an explicitly configured or inventoried authority, and require REST base prefixes to
-   come from configured or inventoried origins. Exercise lexical shadowing so a same-named local
-   variable cannot inherit another scope's generated route. Require generated `QueryParam` and
-   `Header` keys for query setters and direct or aliased map writes, map literals, request headers,
-   and custom-header maps. Resolve custom-header maps by lexical binding; a nested same-named map
-   with generated keys must not hide an outer raw-key map that is sent. Reject custom-header maps
+   Resolve route assignments by lexical binding and control flow; trust only values proven on every
+   path to the send, not a generated assignment made in just one conditional branch. Test negative
+   cases for unschematized endpoints and channels, mismatched methods and paths, and targets changed
+   after schema-bound construction, including appended or wrapped paths and invalid formatting. A
+   generated path does not approve an arbitrary authority in a formatted full URL; accept only an
+   explicitly configured or inventoried authority, and require REST base prefixes to come from
+   configured or inventoried origins. Exercise lexical shadowing so a same-named local variable
+   cannot inherit another scope's generated route. Require generated `QueryParam` and `Header` keys
+   for query setters and direct or aliased map writes, map literals, request headers, and
+   custom-header maps. Resolve custom-header maps by lexical binding; a nested same-named map with
+   generated keys must not hide an outer raw-key map that is sent. Reject custom-header maps
    returned from or passed through unverified helpers. Reject schema-bound `url.Values` maps and
    their aliases when they escape as arguments or receivers to unverified helpers that could add
    handwritten query keys. Track `url.Values` provenance by lexical binding and assignment; discard
    generated-map trust after reassignment from an untrusted source, and never accept `URL.Query` or
-   `url.ParseQuery` results as outbound generated-key sources. Exercise direct outbound network
+   `url.ParseQuery` results as outbound generated-key sources. Reject unresolved address-taking or
+   pointer/helper escapes for route strings, query maps, and header maps that could permit mutation;
+   accept them only when the gate proves the value remains safe. Exercise direct outbound network
    primitives, imports, method values and method expressions, including local and file-scope aliases
    such as package-level references to transport helpers and injected client methods. Cover request
    and URL aliases, mutations after construction, aggregate fields and indexed storage, and values
