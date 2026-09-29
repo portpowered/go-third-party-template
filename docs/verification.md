@@ -164,9 +164,12 @@ no helper is called: store a schema-keyed header map in
 `holder := struct{ values map[string]string }{headers}` and reject a raw write
 such as `holder.values["Cookie"] = "raw"`; store `url.Values` in
 `holders := []url.Values{params}` and reject a write such as
-`holders[0]["raw"] = []string{"x"}`. For schema-bound `url.Values`,
-reject both the map and aliases passed as arguments or method receivers to
-unverified helpers where handwritten query keys could be added; include a case
+`holders[0]["raw"] = []string{"x"}`. Also reject assigning query or header maps
+to package-level variables, which could carry unverified keys into another
+function. Keep provenance only across aliases proven local to the current
+function; include a positive control for a tracked local alias. For schema-bound
+`url.Values`, reject both the map and aliases passed as arguments or method
+receivers to unverified helpers where handwritten query keys could be added; include a case
 where the helper adds a raw key before the map is encoded. Track query-map
 provenance by lexical binding and latest assignment. If route logic uses
 `len(params)`, accept it as a built-in

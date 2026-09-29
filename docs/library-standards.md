@@ -38,21 +38,23 @@ Apply these requirements when creating a library from this template:
    generated-map trust after reassignment from an untrusted source, and never accept `URL.Query` or
    `url.ParseQuery` results as outbound generated-key sources. Reject storing schema-keyed query or
    header maps in aggregate fields or indexed elements, even without a helper call; later field or
-   index writes must not regain trust. Reject unresolved address-taking or pointer/helper escapes
-   for route strings, query maps, and header maps that could permit mutation; accept them only when
-   the gate proves the value remains safe. Resolve generated selector qualifiers such as
-   `apiroutes`, the model-constant package, and `fmt` to actual imports;
-   `http.NewRequestWithContext` must resolve through the `net/http` import. Treat `len(params)` as a
-   built-in call only when `len` resolves to the Go builtin. An approved authority or base URL field
-   must resolve to the actual Client receiver declared by the method. An inventoried `Client.Do`
-   must use that receiver's actual injected client field object, not a same-spelled shadowing local.
-   Exercise direct outbound network primitives, imports, method values and method expressions,
-   including local and file-scope aliases such as package-level references to transport helpers and
-   injected client methods. Cover request and URL aliases, mutations after construction, aggregate
-   fields and indexed storage, and values escaping to helpers; each uncovered route, channel, or
-   network edge must fail. Distinguish provider-verified contracts from implementation-derived
-   contracts and never present the latter as official behavior. Replace the template's clearly
-   synthetic widget schema before presenting a provider API as supported behavior.
+   index writes must not regain trust. Retain query/header map provenance only through aliases
+   proven local to the current function; reject storing those maps in package-level or other
+   cross-function state. Reject unresolved address-taking or pointer/helper escapes for route
+   strings, query maps, and header maps that could permit mutation; accept them only when the gate
+   proves the value remains safe. Resolve generated selector qualifiers such as `apiroutes`, the
+   model-constant package, and `fmt` to actual imports; `http.NewRequestWithContext` must resolve
+   through the `net/http` import. Treat `len(params)` as a built-in call only when `len` resolves to
+   the Go builtin. An approved authority or base URL field must resolve to the actual Client
+   receiver declared by the method. An inventoried `Client.Do` must use that receiver's actual
+   injected client field object, not a same-spelled shadowing local. Exercise direct outbound
+   network primitives, imports, method values and method expressions, including local and file-scope
+   aliases such as package-level references to transport helpers and injected client methods. Cover
+   request and URL aliases, mutations after construction, aggregate fields and indexed storage, and
+   values escaping to helpers; each uncovered route, channel, or network edge must fail. Distinguish
+   provider-verified contracts from implementation-derived contracts and never present the latter as
+   official behavior. Replace the template's clearly synthetic widget schema before presenting a
+   provider API as supported behavior.
 5. Run offline build, lint, race, and replay checks before release. Configure golangci-lint v2 with the literal `linters.default: all`, pin its version in CI, and make the full-repository lint run a blocking gate. Do not set `--issues-exit-code=0`, continue after lint failures, or limit CI to new issues. Keep all linters enabled; any exception must name the narrow rule and affected path, give its reason in a config exclusion or beside a source annotation, and receive independent review. Style fixes must preserve persisted example/config JSON keys; lock them with a regression test or document an intentional key migration. A reviewer who did not implement the migration must confirm passing blocking CI on the exact commit before checking item 5. Keep real captures sanitized and separate from synthetic fixtures.
 6. Add deterministic synthetic request, response, error, and session fixtures for supported behavior. Measure coverage of non-generated production code by public and transport package and in combination; enforce at least 80% combined coverage in CI and target 90%. Report generated-code exclusions and remaining uncovered behavior rather than adding tests solely to raise a number.
 7. Put the reusable public provider package under `pkg/<provider>` and its private wire types under an appropriate `internal` package. Keep examples, generated models, and transport packages in clear, separate locations. Verify public import paths from a separate consumer module.
