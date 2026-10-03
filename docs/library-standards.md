@@ -21,8 +21,8 @@ Apply these requirements when creating a library from this template:
    Build a complete model inventory as well as an endpoint inventory. For every production
    struct encoded, decoded, or embedded in a wire exchange, record its schema component,
    generated Go type, generator command, and conversion call site. Include exported dependency
-   structs, unused legacy exports, anonymous objects, nested feature payloads, and custom
-   decoders. A generated file marker or passing route gate is not proof that the remaining
+   structs, primitive enums and constants, unused legacy exports, anonymous objects, nested
+   feature payloads, and custom decoders. A generated file marker or passing route gate is not proof that the remaining
    structs are generated. Remove unused wire definitions; generate active ones. Test the
    model gate with an unreferenced exported handwritten JSON struct and an anonymous nested wire
    object; unused compatibility exports must not escape the scan.
