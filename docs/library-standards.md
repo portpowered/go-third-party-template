@@ -18,6 +18,15 @@ Apply these requirements when creating a library from this template:
    this requirement. Keep genuinely caller-defined open fields explicit in the schema and
    distinguish them from payload shapes constructed by the library. Add a negative gate test
    for an unregistered nested payload or library-defined wire key.
+   Record each primitive value and semantic projection separately, with its schema owner,
+   generated declaration, and actual package-resolved uses; similarly named SDK and transport
+   values must not be conflated. Bind shared known values to their original enum and reject
+   value drift or a missing binding. Preserve explicitly open future values. When a GraphQL
+   JSON scalar contains known members, generate those members from a bound component without
+   changing the emitted selection. Generate library-owned string templates and cookie formats
+   as well as JSON objects. Negative controls must reject a novel unregistered fixed value or
+   key in a generated wire object, later field mutations, local aliases, and forged generated
+   markers; a denylist of already-known literal values alone is insufficient.
    Build a complete model inventory as well as an endpoint inventory. For every production
    struct encoded, decoded, or embedded in a wire exchange, record its schema component,
    generated Go type, generator command, and conversion call site. Include exported dependency

@@ -67,6 +67,14 @@ documents. Record schema possible types with no selected subtype fields accurate
 Negative controls must catch unknown nested payloads or wire keys, missing or
 mismatched decoder branches, possible-type drift, and missing discriminators.
 
+Audit primitive constants and open-string known values separately from object types.
+Resolve their uses through exact imports, check bindings to shared source enums,
+and test removal of a binding as well as a changed value. Bind known JSON-scalar
+members to generated types without changing the GraphQL selection. Negative tests
+must introduce a new fixed value or key absent from every schema, including a
+post-construction mutation and an alias; rejecting only known literal values is
+not sufficient. Inspect generated string templates and cookie recognition rules.
+
 ## Fixture provenance
 
 Each replay case must carry both sides of the exchange. For HTTP, keep the
