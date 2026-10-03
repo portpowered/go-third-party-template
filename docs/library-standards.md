@@ -12,6 +12,12 @@ Apply these requirements when creating a library from this template:
    wire request/response types from those schemas. Include nested event properties and payloads
    serialized inside strings or encrypted wrappers; use generated artifacts at every wire boundary,
    and do not sign off while a handwritten wire definition or model remains.
+   Inventory concrete payload variants and library-defined map keys, operation values, and skill
+   or message identifiers as well as structs. Generate known nested payloads and their wire
+   constants from schema; a generated outer envelope around a handwritten map does not satisfy
+   this requirement. Keep genuinely caller-defined open fields explicit in the schema and
+   distinguish them from payload shapes constructed by the library. Add a negative gate test
+   for an unregistered nested payload or library-defined wire key.
    Build a complete model inventory as well as an endpoint inventory. For every production
    struct encoded, decoded, or embedded in a wire exchange, record its schema component,
    generated Go type, generator command, and conversion call site. Include exported dependency
@@ -20,6 +26,11 @@ Apply these requirements when creating a library from this template:
    structs are generated. Remove unused wire definitions; generate active ones. Test the
    model gate with an unreferenced exported handwritten JSON struct and an anonymous nested wire
    object; unused compatibility exports must not escape the scan.
+   For GraphQL, trace generated models to SDL components and actual emitted operation selections.
+   Validate generator-added discriminators and exact generated decoder branches against schema
+   possible types. Label type-only implementations with no selected subtype fields explicitly;
+   comments naming implementations do not prove the decoder or the outbound selection. Test
+   missing, extra, and mismatched decoder cases, possible-type drift, and a missing discriminator.
    Include active network calls made by pinned third-party dependencies, even when the library only
    supplies a transport wrapper. Keep their contracts in separate checked-in external schemas and
    source-matched protocol files; inventory the exact dependency version, host, method, path, framed

@@ -55,6 +55,18 @@ Use `-percent-only -min 0` when producing a coverage badge from the same
 non-generated measurement. Pass `-filtered-profile coverage.filtered.out` to
 write a profile for an HTML report that uses the same exclusions.
 
+## Model audit
+
+During the model audit, inspect library-built maps and nested payloads encoded
+inside strings or wrappers. Known fields, operation values, and message identifiers
+need schema-generated definitions; an open object on the outer envelope is not
+evidence for concrete payload variants. Keep caller-defined open input separate.
+For GraphQL, inspect the emitted operation and custom decoder branches as well
+as the SDL: generators may add discriminators that are absent from authored
+documents. Record schema possible types with no selected subtype fields accurately.
+Negative controls must catch unknown nested payloads or wire keys, missing or
+mismatched decoder branches, possible-type drift, and missing discriminators.
+
 ## Fixture provenance
 
 Each replay case must carry both sides of the exchange. For HTTP, keep the
