@@ -74,6 +74,9 @@ members to generated types without changing the GraphQL selection. Negative test
 must introduce a new fixed value or key absent from every schema, including a
 post-construction mutation and an alias; rejecting only known literal values is
 not sufficient. Inspect generated string templates and cookie recognition rules.
+Check every key in nested indexed receiver paths, including through reassigned aliases,
+pointer dereferences, slices, and type assertions. Include negative probes for intermediate
+keys and inferred nested composite literals; preserve caller-defined open keys in positive cases.
 
 ## Fixture provenance
 
@@ -88,6 +91,11 @@ that returns a response after a request mismatch. Explicitly describe how
 volatile or redacted values are matched; compare their structure or decoded
 meaning rather than skipping them. Check this for every transport during the
 independent review (library standard 15).
+Match full authentication forms and headers, including CSRF, OTP, and token exchanges.
+For OAuth, verify state/callback and PKCE challenge/verifier bindings. Validate hardware
+identity reuse and volatile formats before replacing values with placeholders. Match full
+signaling handshakes and envelopes. Finish lifecycle assertions after the expected close or
+teardown; neither a startup notification nor a terminal read timeout proves cleanup.
 
 Keep real captures, synthetic examples, and historical references separate:
 
