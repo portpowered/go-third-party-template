@@ -39,6 +39,14 @@
 
 ## Tag and verify
 
+Release the standalone CLI module under `cmd/go-<provider>` with a nested-module
+tag such as `cmd/go-provider/v0.1.0`. Publish the SDK version required by its
+`go.mod` first. Include the CLI module in blocking lint, build, test, formatting,
+and module checks. Verify `go install <module-path>@<version>` from the public
+Go module proxy in a clean environment without a local replacement. Document
+that installation command in the customer MDX guide. Coordinate SDK and CLI
+releases; an SDK tag alone does not publish a nested module.
+
 Use semantic version tags of the form vMAJOR.MINOR.PATCH. Go modules use a
 new major module path for v2 and later releases. Tag a reviewed commit and push
 the tag to start .github/workflows/release.yml. The release workflow reruns the

@@ -103,19 +103,28 @@ behavior.
 The template includes guidance directories only; it does not contain captures
 or claim any provider behavior has been verified.
 
+## CLI verification
+
+The standalone CLI must exercise the public SDK without a consuming application.
+Check help, authentication, read/control commands, event cancellation and cleanup,
+JSON output, and failure exit codes with credential-free paired replay tests.
+Run lint, build, tests, formatting, and module checks in the CLI's separate module
+as blocking CI jobs. Verify the published CLI can be installed from a clean
+consumer module; document the commands and explicit credential export in MDX.
+
 ## Independent standards review
 
-Assign a reviewer who did not implement the migration to inspect the library
-at a specific commit. The reviewer checks each numbered library standard against
+Assign two reviewers who did not implement the migration to inspect the library
+at the final implementation commit. Each reviewer checks every numbered library standard against
 the exported API, schemas and generated files, client call sites, synthetic and
 captured evidence, CI workflows and results, package layout, rendered Pages
-site, and release/history record. The reviewer writes a repository document
+site, and release/history record. Both reviewers write separate sections in one current review document
 with an individual verdict and concrete evidence for each numbered standard,
 including an endpoint inventory and negative gate tests for item 4. Link it
 from the library checklist and record each finding there. Keep the
 independent-review item open until every finding and other checklist item is
 resolved. Tracking an open finding is not sign-off. Rerun the affected checks
-and have the reviewer verify the fixes at the final commit before marking the
+and have both reviewers verify the fixes at the final commit before marking the
 item complete. Keep provider behavior that lacks documented account evidence
 labeled implementation-derived.
 
