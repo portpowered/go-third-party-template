@@ -107,6 +107,20 @@ and have the reviewer verify the fixes at the final commit before marking the
 item complete. Keep provider behavior that lacks documented account evidence
 labeled implementation-derived.
 
+Include a complete wire-model inventory: schema component, generated Go type and file,
+generator command, transport use, and any compatibility alias. Independently search all
+production packages for named and anonymous serialization structs, including exported
+dependency types and custom encoders or decoders. Prove the model gate rejects an
+unreferenced exported handwritten JSON struct and an anonymous nested wire object.
+Verify API components are grouped by responsibility in `pkg/dependencymodels`
+and no parallel internal model bucket remains. Generated output alone is not a full audit.
+
+For documentation sign-off, inspect every tracked document, including files excluded from
+the site build. Record its audience and purpose, remove duplicate or obsolete internal
+material, and check incoming links after deletion. Keep README content useful to callers;
+put maintenance details in contributor material. Retain one current checklist and review
+record rather than a chain of standalone historical reports.
+
 ## Continuous integration
 
 Before signing off schema generation, list every outbound HTTP method and path,

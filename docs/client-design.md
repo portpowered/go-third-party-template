@@ -51,10 +51,12 @@ produced by a session without reading internal client fields.
 ## Transport ownership
 
 The transport package owns request construction, response decoding, and
-transport error classification. It accepts an injected HTTPDoer while keeping
-wire structs private. The caller owns its HTTP transport configuration and
+transport error classification. It accepts an injected HTTPDoer and consumes
+schema-generated wire structs from `pkg/dependencymodels`. The caller owns its HTTP transport configuration and
 request deadlines. Add focused injection points for each other protocol the
 client uses, including HTTP/2, WebSocket, MQTT, or RTC signaling. Keep
-transport details out of public request and result types. Place wire types in
-an appropriate `internal` package and verify the public import path from a
-separate consumer module.
+transport details out of public request and result types. Split generated model files and
+their schemas by API responsibility, keeping a behavior API's request, response, and nested
+objects together. Avoid a separate internal model bucket or handwritten duplicate wire
+structs. Keep conversion and custom decoding behavior beside the related API component;
+generate its field definitions. Verify public import paths from a separate consumer module.

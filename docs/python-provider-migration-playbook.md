@@ -92,8 +92,10 @@ supports.
   mappings that are not represented by the schemas; document those mappings
   and keep conversions at a clear boundary.
 
-Keep generated wire types inside the implementation boundary unless callers
-need them as part of the public API. When a public library type has different
+Place generated wire types in `pkg/dependencymodels`, split by API responsibility
+alongside their schema components. Do not retain a parallel internal models bucket.
+Inventory every serialized production struct and link it to a generated schema type;
+add negative tests for handwritten and anonymous nested wire definitions. When a public library type has different
 semantics from the provider schema, convert explicitly at the boundary. See
 [client design](client-design.md) for the root package and transport split.
 
@@ -266,6 +268,9 @@ application workflows and persistence in the application.
 - [ ] Explain setup and migration for application callers without exposing
   internal implementation details as part of the API.
 - [ ] Review the README and examples from the perspective of a new Go consumer.
+- [ ] Remove maintenance inventories, review history, and fixture audit details from the
+  README and customer guides. Inspect every tracked document, delete redundant internal
+  reports, and retain one current checklist and independent review record.
 
 ## 12. Prepare the module for release
 
@@ -302,6 +307,8 @@ The migration is ready for review when all of the following are true:
 - [ ] Schema-defined provider and internal models are generated reproducibly,
   implementation code uses those generated types, and CI checks for stale
   generated output.
+- [ ] An independent complete wire-model inventory finds no handwritten wire definitions
+  or duplicate internal model bucket; generated files and schemas are split by API.
 - [ ] Captured, synthetic, and historical material is stored separately and
   sensitive values have been removed.
 - [ ] Authentication, transport, failure mapping, cancellation, and concurrency

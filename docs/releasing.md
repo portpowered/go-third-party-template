@@ -31,6 +31,11 @@
 8. Run schema generation and drift, method/path/channel inventory, race tests,
    and the minimum coverage gate on the exact commit to tag. Review release-note
    copy and every link after moving guides into the Pages site.
+9. Independently verify the complete wire-model inventory, including unused exported
+   compatibility structs and anonymous nested payloads. Confirm generated definitions and
+   schemas are split by API responsibility, and the model gate fails for handwritten
+   additions. Inspect every tracked documentation file and keep maintenance detail out
+   of the README and customer guides; remove redundant internal reports before sign-off.
 
 ## Tag and verify
 
