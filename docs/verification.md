@@ -57,6 +57,12 @@ write a profile for an HTML report that uses the same exclusions.
 
 ## Model audit
 
+Run source-gate negative controls through the repository's actual CI commands,
+including their default working directory and root arguments. Include every
+production sibling file in a package, even when it is newly added or carries a
+forged generated marker. Test compile-valid sibling helper returns and map mutations;
+keep caller-defined open values as positive controls.
+
 During the model audit, inspect library-built maps and nested payloads encoded
 inside strings or wrappers. Known fields, operation values, and message identifiers
 need schema-generated definitions; an open object on the outer envelope is not
