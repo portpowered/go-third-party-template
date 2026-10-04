@@ -38,6 +38,15 @@ across the entire rendered site, including the root and generated references;
 review external destinations and release-note URLs separately. Remove duplicate
 repository guide pages and repeated caveats while retaining evidence labels.
 
+Put complete request, response and event examples in their canonical schemas and
+validate them in CI. Generic command or message envelopes must expose named payload
+variants correlated with their identifiers, including required nested fields. Review
+the actual generated page and its request snippets: placeholders such as an unknown
+`params` field or `null` for a required known object are not usable documentation.
+Check resource updates, relation changes and each command's parameters and result,
+including examples loaded by the renderer at runtime. Keep guides focused on workflows
+and link their matching schema reference instead of maintaining competing payload lists.
+
 ## Enable GitHub Pages
 
 In the repository settings, open **Pages** and set the publishing source to

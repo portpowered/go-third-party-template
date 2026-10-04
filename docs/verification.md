@@ -57,6 +57,20 @@ write a profile for an HTML report that uses the same exclusions.
 
 ## Model audit
 
+Validate each canonical request, response and event example against its owning schema.
+Cover every known dispatch variant with complete envelopes and nested payloads, including
+resource updates, relation changes, empty acknowledgements and representative errors.
+Test identifier/payload correlation: a known command must reject another command's
+parameters and malformed known input must not escape through a future-value branch.
+Inspect the rendered reference and generated request snippets as well as schema output;
+required nested fields and useful example values must be discoverable to a customer.
+
+For interactive authorization, replay browser consent, callback state validation and PKCE
+binding, token exchange and provider-required activation calls as one complete flow.
+Keep browser, loopback listener and transport injectable; test denial, invalid or duplicate
+callback parameters, wrong redirects, cancellation, repeated completion and cleanup.
+Assert ordinary output excludes credentials and explicit export is required.
+
 Run source-gate negative controls through the repository's actual CI commands,
 including their default working directory and root arguments. Include every
 production sibling file in a package, even when it is newly added or carries a

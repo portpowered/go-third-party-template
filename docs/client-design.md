@@ -56,6 +56,14 @@ produced by a session without reading internal client fields.
 
 ## Transport ownership
 
+For interactive authorization, expose a consent URL and typed callback completion
+on caller-owned authorization state or an explicit session. Keep the reusable
+client stateless. Bind the callback to the original state and exact redirect,
+use PKCE when the provider supports it, and complete any required activation
+call before reporting success. Callers own callback endpoints; an optional CLI
+loopback listener must have an injectable, cancellable lifetime and idempotent
+cleanup. Return credentials explicitly for caller storage and renewal.
+
 The transport package owns request construction, response decoding, and
 transport error classification. It accepts an injected HTTPDoer and consumes
 schema-generated wire structs from `pkg/dependencymodels`. The caller owns its HTTP transport configuration and
