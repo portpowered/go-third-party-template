@@ -27,6 +27,12 @@ Apply these requirements when creating a library from this template:
    as well as JSON objects. Negative controls must reject a novel unregistered fixed value or
    key in a generated wire object, later field mutations, local aliases, and forged generated
    markers; a denylist of already-known literal values alone is insufficient.
+   Follow wire values and map provenance through helper arguments and returns,
+   including named results with bare returns, local aliases, and returned callbacks.
+   Add negative controls for a novel fixed value returned through a named result and
+   a generated map escaping through a named result to an unverified helper. Retain
+   positive controls for caller-defined values; do not treat diagnostic or error
+   return values as wire payloads merely because they share a helper.
    Check all intermediate keys in indexed receiver paths and aliases, including slices,
    pointer dereferences, and type assertions. Test inferred nested composites and retain
    positive cases for explicitly caller-defined open keys.
