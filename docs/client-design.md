@@ -20,6 +20,12 @@ belong in requests or explicit sessions. Do not update shared client fields
 when a login or refresh call returns new credentials. Return those credentials
 to the caller for storage and later requests.
 
+Audit mutable state inside injected clients as well as SDK fields. Shallow-copying
+an `http.Client` preserves its CookieJar pointer. Reject a shared account cookie jar
+with an inspectable configuration error or put cookie storage in an explicit
+session. Prove isolation with two accounts and complete outbound request assertions;
+keep stateless custom transports injectable.
+
 The example Client interface is a provider-specific contract. These design
 conventions can be reused by separate provider libraries, but this template has
 one implementation and does not validate a shared interface across providers.
