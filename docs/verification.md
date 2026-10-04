@@ -284,6 +284,15 @@ string to an unverified helper that can mutate it. These escapes invalidate
 the checked value through the eventual wire send unless the gate proves the
 pointer path cannot change it.
 
+Scan all shipped production Go modules, including standalone CLI and example
+modules, rather than only the SDK package tree. Add a compile-valid unregistered
+network call in a CLI module and require the default root gate to reject it.
+Track mutable backing storage of request-body readers until the actual send.
+A byte slice changed after `bytes.NewReader` and request construction changes
+the emitted body; test that mutation and a safe immutable-body positive. Reading
+the original reader alone is not proof of a changed request body when the HTTP
+constructor clones the reader.
+
 The network inventory tests reject direct calls to unregistered outbound
 primitives and unregistered network imports. Exercise HTTP convenience calls
 such as `Get`, `Post`, `PostForm`, and `Head`; sends such as `Do` and
