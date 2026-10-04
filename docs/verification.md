@@ -62,6 +62,11 @@ including their default working directory and root arguments. Include every
 production sibling file in a package, even when it is newly added or carries a
 forged generated marker. Test compile-valid sibling helper returns and map mutations;
 keep caller-defined open values as positive controls.
+Unresolved provenance is not evidence of caller ownership. Recursion, traversal
+limits, and unresolved library helpers must produce a failing diagnostic at a
+schema-owned wire value or key. Include a helper chain beyond the verifier limit
+and a recursive fixed fallback as negative controls, with proven caller-input
+positives.
 
 During the model audit, inspect library-built maps and nested payloads encoded
 inside strings or wrappers. Known fields, operation values, and message identifiers
