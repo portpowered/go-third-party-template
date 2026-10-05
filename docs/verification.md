@@ -57,6 +57,12 @@ write a profile for an HTML report that uses the same exclusions.
 
 ## Model audit
 
+Run `go run ./tools/schemaexamples` (also the blocking `make schema-examples` target) to validate
+every declared schema sample and all schema-bearing OpenAPI request, success, failure and AsyncAPI
+message groups. Mark synthetic declarations `x-example-evidence: synthetic`; for AsyncAPI, put each `examples[]` sample's evidence on its enclosing Message Object and direct payload-schema sample evidence on that schema; the closed Example Object does not take evidence.
+Local and relative references must resolve. See [canonical schema examples](schema-examples.md) for the ownership and
+group rules. Keep `schema-examples` in the default check, pull-request CI and release workflow.
+
 Validate each canonical request, response and event example against its owning schema.
 Cover every known dispatch variant with complete envelopes and nested payloads, including
 resource updates, relation changes, empty acknowledgements and representative errors.
@@ -106,6 +112,37 @@ not sufficient. Inspect generated string templates and cookie recognition rules.
 Check every key in nested indexed receiver paths, including through reassigned aliases,
 pointer dereferences, slices, and type assertions. Include negative probes for intermediate
 keys and inferred nested composite literals; preserve caller-defined open keys in positive cases.
+
+## Schema-supplied links and rendered references
+
+Keep the documentation workflow's schema inputs explicit and aligned with the
+checker inputs. Set discover to false when the published set is explicit, and
+include only the canonical assembled OpenAPI, AsyncAPI, GraphQL, and binding
+sources that the workflow renders.
+
+After rendering, run the schema-link checker against that exact output and
+input set:
+
+~~~sh
+go run ./tools/schemalinks -site site -schemas api/openapi.yaml -base-path /<repository-name>
+~~~
+
+The checker resolves local YAML references and records URLs from externalDocs,
+server URL fields, descriptions, and supported GraphQL schema bindings. Keep
+source schema path, JSON pointer, line, and owning operation in the manifest.
+Every published externalDocs destination must be reviewed against primary
+provider content for the linked operation and path. Record the evidence class
+and any limitations in tools/schemalinks/reviews.json. A general provider
+guide does not establish an undocumented operation contract; label
+implementation-derived routes as such and point to local implementation
+evidence.
+
+CI checks same-site Pages destinations against the rendered files and fails
+when a schema-supplied internal target is missing. It records external and URL
+template destinations for review without making remote requests, so transient
+provider availability does not change the build result. Upload the full
+rendered site, including schema-links.json, as a review artifact from the
+same commit.
 
 ## Fixture provenance
 

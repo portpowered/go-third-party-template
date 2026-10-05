@@ -4,15 +4,18 @@ PUBLIC_MODULE ?= github.com/example/your-service-go
 PUBLIC_PACKAGES ?= .,httpclient
 
 .DEFAULT_GOAL := check
-.PHONY: check build test lint fmt api-compatibility
+.PHONY: check build test lint fmt schema-examples api-compatibility
 
-check: lint build test
+check: lint build test schema-examples
 
 build:
 	$(GO) build ./...
 
 test:
 	$(GO) test -race ./...
+
+schema-examples:
+	$(GO) run ./tools/schemaexamples
 
 lint:
 	$(GO) vet ./...

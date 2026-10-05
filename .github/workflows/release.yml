@@ -37,6 +37,8 @@ jobs:
         run: go run ./tools/compatibility -policy release -base previous-release -version "$VERSION" -module "$PUBLIC_MODULE" -packages "$PUBLIC_PACKAGES"
       - name: Test
         run: go test -race ./...
+      - name: Validate canonical schema examples
+        run: make schema-examples
       - name: Vet
         run: go vet ./...
       - name: Verify public module from a consumer

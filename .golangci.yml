@@ -9,11 +9,29 @@ linters:
     depguard:
       rules:
         Main:
-          # The example, HTTP client, and their tests intentionally import this module.
+          files:
+            - $all
+            - "!**/tools/schemaexamples/**"
+            - "!**/tools/schemalinks/**"
           list-mode: strict
           allow:
             - $gostd
             - github.com/example/your-service-go
+        SchemaExamples:
+          files:
+            - "**/tools/schemaexamples/**"
+          list-mode: strict
+          allow:
+            - $gostd
+            - github.com/santhosh-tekuri/jsonschema/v6
+            - gopkg.in/yaml.v3
+        SchemaLinks:
+          files:
+            - "**/tools/schemalinks/**"
+          list-mode: strict
+          allow:
+            - $gostd
+            - gopkg.in/yaml.v3
   exclusions:
     generated: strict
 
