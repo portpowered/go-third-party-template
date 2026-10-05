@@ -38,6 +38,9 @@ Apply these requirements when creating a library from this template:
    as well as JSON objects. Negative controls must reject a novel unregistered fixed value or
    key in a generated wire object, later field mutations, local aliases, and forged generated
    markers; a denylist of already-known literal values alone is insufficient.
+   Recursively resolve closed-enum constraints through schema references, nested or anonymous
+   structs, and arrays or slices. Reject invalid values in caller-constructed containers for
+   closed fields, while retaining positive controls for genuinely caller-defined open fields.
    Follow wire values and map provenance through helper arguments and returns,
    including named results with bare returns, local aliases, and returned callbacks.
    Add negative controls for a novel fixed value returned through a named result and
@@ -64,7 +67,9 @@ Apply these requirements when creating a library from this template:
    feature payloads, and custom decoders. A generated file marker or passing route gate is not proof that the remaining
    structs are generated. Remove unused wire definitions; generate active ones. Test the
    model gate with an unreferenced exported handwritten JSON struct and an anonymous nested wire
-   object; unused compatibility exports must not escape the scan.
+   object; unused compatibility exports must not escape the scan. For each anonymous object,
+   record its exact schema path, JSON field path, Go field path, schema owner, generated Go type,
+   generator command, and actual encode or decode uses.
    For GraphQL, trace generated models to SDL components and actual emitted operation selections.
    Validate generator-added discriminators and exact generated decoder branches against schema
    possible types. Label type-only implementations with no selected subtype fields explicitly;
@@ -155,6 +160,10 @@ Apply these requirements when creating a library from this template:
     or absence of redundant internal documents. Missing inventory entries or unexamined files
     keep the corresponding verdict open.
 15. Store and replay each wire exchange as a paired request and response (or an ordered bidirectional message transcript). Include method, origin, escaped path, repeated query values, relevant headers, and body or frame payload in the request expectation; include response status, relevant headers, and body. Match the outbound request before returning its response, reject unexpected or duplicate calls, and assert that every expected exchange was consumed in order where order matters. Never fall back to a response when request matching fails. Represent volatile IDs, timestamps, signatures, and redacted credentials with explicit match rules that still validate their format or decoded meaning. Apply this to every supported transport and classify each pair as captured or synthetic; a response-only fixture does not satisfy replay verification.
+     For HTTP, validate the effective authority, including any `Request.Host` override, before
+     returning the paired response. Reject unexpected URL user information, opaque URLs, and
+     malformed query strings; include a request-identity mismatch negative control. Keep secret
+     values out of mismatch diagnostics.
     Match authentication forms and headers in full, including CSRF, OTP, and token exchange fields.
     Bind OAuth state to the callback, validate PKCE challenge/verifier relationships, and bind the
     hardware identity across requests. Validate volatile field formats before normalization.

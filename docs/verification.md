@@ -91,6 +91,10 @@ as the SDL: generators may add discriminators that are absent from authored
 documents. Record schema possible types with no selected subtype fields accurately.
 Negative controls must catch unknown nested payloads or wire keys, missing or
 mismatched decoder branches, possible-type drift, and missing discriminators.
+Recursively resolve closed-enum constraints through schema references, nested or
+anonymous structs, and arrays or slices. Test invalid closed values inside
+caller-constructed containers, while retaining positive controls for genuinely
+caller-defined open fields.
 
 Audit primitive constants and open-string known values separately from object types.
 Resolve their uses through exact imports, check bindings to shared source enums,
@@ -116,6 +120,10 @@ that returns a response after a request mismatch. Explicitly describe how
 volatile or redacted values are matched; compare their structure or decoded
 meaning rather than skipping them. Check this for every transport during the
 independent review (library standard 15).
+For HTTP, validate the effective authority, including a `Request.Host` override,
+before returning the paired response. Reject unexpected URL user information,
+opaque URLs, and malformed query strings. Include a request-identity mismatch
+negative control, and keep secret values out of mismatch diagnostics.
 Match full authentication forms and headers, including CSRF, OTP, and token exchanges.
 For OAuth, verify state/callback and PKCE challenge/verifier bindings. Validate hardware
 identity reuse and volatile formats before replacing values with placeholders. Match full
@@ -178,10 +186,12 @@ item complete. Keep provider behavior that lacks documented account evidence
 labeled implementation-derived.
 
 Include a complete wire-model inventory: schema component, generated Go type and file,
-generator command, transport use, and any compatibility alias. Independently search all
-production packages for named and anonymous serialization structs, including exported
-dependency types and custom encoders or decoders. Prove the model gate rejects an
-unreferenced exported handwritten JSON struct and an anonymous nested wire object.
+generator command, transport use, and any compatibility alias. For each anonymous object,
+record its exact schema path, JSON field path, Go field path, schema owner, generated Go type,
+generator command, and actual encode or decode uses. Independently search all production
+packages for named and anonymous serialization structs, including exported dependency types
+and custom encoders or decoders. Prove the model gate rejects an unreferenced exported
+handwritten JSON struct and an anonymous nested wire object.
 Verify API components are grouped by responsibility in `pkg/dependencymodels`
 and no parallel internal model bucket remains. Generated output alone is not a full audit.
 
