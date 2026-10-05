@@ -19,6 +19,8 @@ may hold immutable service settings and injected transports; account tokens
 belong in requests or explicit sessions. Do not update shared client fields
 when a login or refresh call returns new credentials. Return those credentials
 to the caller for storage and later requests.
+When the supported provider contract has no refresh operation, document how
+callers explicitly reauthenticate through login and retrieve the new credentials.
 
 Audit mutable state inside injected clients as well as SDK fields. Shallow-copying
 an `http.Client` preserves its CookieJar pointer. Reject a shared account cookie jar
