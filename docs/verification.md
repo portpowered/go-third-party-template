@@ -152,6 +152,14 @@ JSON output, and failure exit codes with credential-free paired replay tests.
 Run lint, build, tests, formatting, and module checks in the CLI's separate module
 as blocking CI jobs. Verify the published CLI can be installed from a clean
 consumer module; document the commands and explicit credential export in MDX.
+Replay the customer guide's ordered workflow: interactive authorization, persisted
+account reuse, device enumeration and selection by ID, a useful read, an explicit
+control, and logout. The customer must not construct request JSON, copy credentials
+between files, or supply default wire parameters. Check invalid authorization,
+ambiguous or unknown device selection, profile persistence and removal, secret
+redaction, cancellation, and session cleanup. Inspect the rendered guide to confirm
+the main instructions match CLI help and the tested command syntax; keep advanced
+formats and protocol explanations outside that sequence.
 
 ## Independent standards review
 

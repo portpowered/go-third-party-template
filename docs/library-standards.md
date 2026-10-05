@@ -162,6 +162,16 @@ Apply these requirements when creating a library from this template:
     close or teardown; a startup notification or terminal read timeout is not cleanup proof.
 
 16. Provide an installable standalone CLI that consumes the public SDK so customers can test the library without a consuming application. Use a separate module under `cmd/go-<provider>`; keep CLI concerns out of the SDK. Cover authentication and explicit token exchange, device or endpoint discovery, important read/control workflows, and event/session lifecycles where supported. Include useful help, machine-readable output, nonzero failures, cancellation, and session cleanup. Accept credentials through documented environment, stdin, or explicit file inputs; keep secrets out of arguments and ordinary output, and make credential export an explicit action. Require explicit commands for device changes. Document installation and customer examples in an MDX guide. Test CLI commands offline through injected paired request/response transports, including authentication errors and lifecycle cleanup, and run blocking pinned all-linter, build, test, and module checks for the CLI in CI. Verify a separate consumer installation from the published CLI module and release its module tags with the SDK.
+    Make routine use a customer workflow: complete authorization, store credentials with
+    explicit ownership, enumerate devices, select a device by ID, and expose useful reads
+    and controls through named commands. Supply stable client identities, protocol defaults,
+    and discovered device metadata automatically. Do not require request JSON, manual
+    credential copying, or wire parameters for the ordinary login and device-control flow.
+    Provide logout and document credential storage. Write the CLI guide as a short ordered
+    sequence of copyable installation, login, discovery, and device-operation instructions.
+    Explain how to choose discovered IDs; move advanced formats and protocol details to
+    separate help or references. Verify the documented sequence offline, including failed
+    authorization, device lookup, cancellation, and session cleanup.
     When supported by the provider, implement the complete interactive authorization flow,
     including browser consent, a localhost callback and provider-required activation calls.
     Expose composable SDK authorization mechanisms for caller-owned callback endpoints.
