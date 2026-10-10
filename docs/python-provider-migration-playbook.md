@@ -307,8 +307,9 @@ The migration is ready for review when all of the following are true:
 - [ ] Schema-defined provider and internal models are generated reproducibly,
   implementation code uses those generated types, and CI checks for stale
   generated output.
-- [ ] An independent complete wire-model inventory finds no handwritten wire definitions
-  or duplicate internal model bucket; generated files and schemas are split by API.
+- [ ] Review generated contracts and representative serialization paths; schemas and
+  generated models are split by API responsibility. Do not require compiler provenance
+  engines or exhaustive ownership proofs for migration acceptance.
 - [ ] Captured, synthetic, and historical material is stored separately and
   sensitive values have been removed.
 - [ ] Authentication, transport, failure mapping, cancellation, and concurrency
