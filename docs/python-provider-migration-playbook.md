@@ -38,7 +38,7 @@ Create a compact operation matrix and keep it with the migration notes:
 Do not start by translating modules one-for-one. Use the inventory to identify
 the provider contract first, then group the Go API around caller operations.
 
-## 2. Record evidence and provenance
+## 2. Record evidence and fixture sources
 
 For each behavior in the operation matrix, note what establishes it: a sanitized
 provider exchange, current official documentation, an existing test, or an
@@ -46,7 +46,7 @@ unverified assumption. Include source URLs or repository paths and dates where
 available.
 
 - [ ] Put observed and sanitized exchanges in
-  `tests/replay/fixtures/captured/` with a neighboring provenance note.
+  `tests/replay/fixtures/captured/` with a neighboring source note.
 - [ ] Record the operation, UTC capture date, source category, redactions, and
   the behavior each capture supports.
 - [ ] Put hand-authored or generated examples in
@@ -59,7 +59,7 @@ available.
   fixture or old document as proof of current provider behavior.
 
 Follow [verification and fixture guidance](verification.md) for the repository
-layout and provenance fields.
+layout and source labels.
 
 ## 3. Define protocol schemas and behavioral contracts
 
@@ -86,16 +86,16 @@ supports.
   models and constants from the checked-in schemas too.
 - [ ] Check in the generation configuration and command, and add a CI check
   that fails when regenerating the models changes the working tree.
-- [ ] Prove the endpoint gate fails for an unschematized method/path, a changed
-  method on an existing path, and an unschematized event channel.
+- [ ] Cover supported methods, paths and event channels with paired behavioral
+  tests that reject unexpected requests and malformed responses.
 - [ ] Keep hand-written types only for library behavior or intentional semantic
   mappings that are not represented by the schemas; document those mappings
   and keep conversions at a clear boundary.
 
 Place generated wire types in `pkg/dependencymodels`, split by API responsibility
 alongside their schema components. Do not retain a parallel internal models bucket.
-Inventory every serialized production struct and link it to a generated schema type;
-add negative tests for handwritten and anonymous nested wire definitions. When a public library type has different
+Review changed serialization paths against their generated contracts and add
+focused behavior tests for concrete compatibility risks. When a public library type has different
 semantics from the provider schema, convert explicitly at the boundary. See
 [client design](client-design.md) for the root package and transport split.
 
@@ -307,8 +307,9 @@ The migration is ready for review when all of the following are true:
 - [ ] Schema-defined provider and internal models are generated reproducibly,
   implementation code uses those generated types, and CI checks for stale
   generated output.
-- [ ] An independent complete wire-model inventory finds no handwritten wire definitions
-  or duplicate internal model bucket; generated files and schemas are split by API.
+- [ ] Review generated contracts and representative serialization paths; schemas and
+  generated models are split by API responsibility. Do not require compiler provenance
+  engines or exhaustive ownership proofs for migration acceptance.
 - [ ] Captured, synthetic, and historical material is stored separately and
   sensitive values have been removed.
 - [ ] Authentication, transport, failure mapping, cancellation, and concurrency
