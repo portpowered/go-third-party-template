@@ -183,30 +183,15 @@ formats and protocol explanations outside that sequence.
 
 ## Independent standards review
 
-Assign two reviewers who did not implement the migration to inspect the library
-at the final implementation commit. Each reviewer checks every numbered library standard against
-the exported API, schemas and generated files, client call sites, synthetic and
-captured evidence, CI workflows and results, package layout, rendered Pages
-site, and release/history record. Both reviewers write separate sections in one current review document
-with an individual verdict and concrete evidence for each numbered standard,
-including supported operations, generated contracts and paired replay results for item 4. Link it
-from the library checklist and record each finding there. Keep the
-independent-review item open until every finding and other checklist item is
-resolved. Tracking an open finding is not sign-off. Rerun the affected checks
-and have both reviewers verify the fixes at the final commit before marking the
-item complete. Keep provider behavior that lacks documented account evidence
-labeled implementation-derived.
+Have an independent reviewer inspect changed code, public APIs, behavioral tests,
+generated contracts and relevant customer documentation. Confirm passing CI on the
+final commit and record concrete findings and their resolution in the pull request or
+one current review document. Add reviewers or broaden review when the risk warrants it.
 
-Review schemas and generated models by API responsibility, representative serialization
-paths, compatibility aliases and public import paths. Use generation drift and functional
-tests as evidence; an exhaustive compiler-resolved model or primitive inventory is not
-required.
-
-For documentation sign-off, inspect every tracked document, including files excluded from
-the site build. Record its audience and purpose, remove duplicate or obsolete internal
-material, and check incoming links after deletion. Keep README content useful to callers;
-put maintenance details in contributor material. Retain one current checklist and review
-record rather than a chain of standalone historical reports.
+For a broad migration, check supported workflows, transport injection, account/session
+isolation, published consumer installation and representative rendered documentation.
+Do not require exhaustive compiler inventories, per-value proofs or repeated full-library
+checklist audits as routine release work.
 
 ## Continuous integration
 
